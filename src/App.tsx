@@ -101,45 +101,21 @@ const getDeviceCapabilities = () => {
 
 const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
   const { viewMode, toggleViewMode } = useViewMode();
   const { isMobile } = useDevice();
   const [deviceCapabilities] = useState(() => getDeviceCapabilities());
 
-  // Error boundary effect with better error filtering
+  // Avoid crashing the app due to benign global errors on some mobile browsers.
+  // Rely on the top-level ErrorBoundary for render errors instead.
   useEffect(() => {
-    const handleError = (error: ErrorEvent) => {
-      // Filter out certain non-critical errors
-      const errorMessage = error.message?.toLowerCase() || '';
-      const ignoredErrors = [
-        'script error',
-        'network error',
-        'loading chunk',
-        'non-error promise rejection'
-      ];
-      
-      if (ignoredErrors.some(ignored => errorMessage.includes(ignored))) {
-        console.warn('Non-critical error ignored:', error);
-        return;
-      }
-
-      console.error('App Error:', error);
-      setHasError(true);
-    };
-
     const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
-      console.warn('Unhandled promise rejection:', event.reason);
-      // Don't crash the app for unhandled promise rejections
+      // Prevent noisy unhandled promise rejections from bubbling
       event.preventDefault();
+      console.warn('Unhandled promise rejection (ignored):', event.reason);
     };
 
-    window.addEventListener('error', handleError);
     window.addEventListener('unhandledrejection', handleUnhandledRejection);
-    
-    return () => {
-      window.removeEventListener('error', handleError);
-      window.removeEventListener('unhandledrejection', handleUnhandledRejection);
-    };
+    return () => window.removeEventListener('unhandledrejection', handleUnhandledRejection);
   }, []);
 
   // Initialize app with performance-based loading
@@ -167,23 +143,7 @@ const App: React.FC = () => {
     };
   }, [viewMode, isMobile]);
 
-  // Error fallback
-  if (hasError) {
-    return (
-      <div className="min-h-screen bg-dark-300 text-white flex items-center justify-center p-4">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-primary mb-4">Something went wrong</h1>
-          <p className="text-white/80 mb-4">Please refresh the page to try again.</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-primary text-black rounded hover:bg-primary/80 transition-colors"
-          >
-            Refresh Page
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // Render continues; fatal render errors will be handled by ErrorBoundary in main.tsx
 
   return (
     <div className={cn(
