@@ -1,0 +1,1 @@
+export { EmailService, type EmailResponse } from './emailService'; 

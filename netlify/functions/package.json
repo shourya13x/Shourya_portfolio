@@ -1,0 +1,12 @@
+{
+  "name": "portfolio-netlify-functions",
+  "version": "1.0.0",
+  "description": "Netlify functions for portfolio contact form",
+  "main": "contact.js",
+  "dependencies": {
+    "nodemailer": "^6.9.7"
+  },
+  "devDependencies": {
+    "@types/nodemailer": "^6.4.14"
+  }
+} 

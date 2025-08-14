@@ -1,0 +1,249 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-gray-800;
+  }
+  
+  body {
+    @apply bg-dark-300 text-white font-sans;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    cursor: auto; /* Ensure cursor is always visible */
+  }
+  
+  /* Ensure cursor is visible on all interactive elements */
+  button, a, input, textarea, select, [role="button"] {
+    cursor: pointer;
+  }
+  
+  /* Temporarily disable global smooth scroll to prevent conflicts */
+  /* html {
+    scroll-behavior: smooth;
+  } */
+}
+
+@layer components {
+  /* Glassmorphism effect */
+  .glass {
+    @apply backdrop-blur-md bg-white/5 border border-white/10;
+  }
+  
+  .glass-strong {
+    @apply backdrop-blur-lg bg-white/10 border border-white/20;
+  }
+  
+  /* Terminal styles */
+  .terminal {
+    @apply bg-black border border-primary/30 font-mono text-primary;
+    background: linear-gradient(135deg, #000000 0%, #0a0a0a 100%);
+    box-shadow: 
+      0 0 20px rgba(0, 255, 136, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  .terminal-text {
+    @apply text-primary font-mono;
+    text-shadow: 0 0 5px currentColor;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* Enhanced terminal text for better readability */
+  .terminal-text-enhanced {
+    @apply text-primary font-mono font-medium;
+    text-shadow: 0 0 8px currentColor;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: 0.025em;
+  }
+  
+  /* Glowing text effect */
+  .glow-text {
+    @apply text-transparent bg-clip-text;
+    background-image: linear-gradient(90deg, #00ff88, #0099ff);
+    text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+  }
+  
+  /* Button styles */
+  .btn-primary {
+    @apply px-6 py-3 bg-gradient-to-r from-primary to-secondary text-black font-semibold rounded-lg;
+    @apply hover:shadow-lg hover:shadow-primary/25 transition-all duration-300;
+    @apply hover:scale-105 active:scale-95;
+  }
+  
+  .btn-secondary {
+    @apply px-6 py-3 border border-primary text-primary rounded-lg;
+    @apply hover:bg-primary hover:text-black transition-all duration-300;
+    @apply hover:shadow-lg hover:shadow-primary/25;
+  }
+  
+  /* Card styles */
+  .card {
+    @apply glass rounded-xl p-6 hover:glass-strong transition-all duration-300;
+    @apply hover:transform hover:scale-105 hover:shadow-xl hover:shadow-primary/10;
+  }
+  
+  /* Navigation styles */
+  .nav-link {
+    @apply relative text-white/80 hover:text-primary transition-colors duration-300;
+  }
+  
+  .nav-link::after {
+    @apply absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300;
+    content: '';
+  }
+  
+  .nav-link:hover::after,
+  .nav-link.active::after {
+    @apply w-full;
+  }
+  
+  /* GitHub contribution grid */
+  .grid-cols-53 {
+    grid-template-columns: repeat(53, minmax(0, 1fr));
+  }
+}
+
+@layer utilities {
+  /* Scrollbar styles */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #00ff88 #1a1a1a;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-track {
+    @apply bg-dark-200;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-primary rounded-full;
+  }
+  
+  /* Global scrollbar styles */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #1a1a1a;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #00ff88;
+    border-radius: 3px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #00cc6a;
+  }
+  
+  /* Text selection */
+  ::selection {
+    @apply bg-primary/30 text-white;
+  }
+  
+  /* Text shadow glow effect for better readability */
+  .text-shadow-glow {
+    text-shadow: 
+      0 0 8px currentColor,
+      0 0 16px currentColor,
+      0 0 24px currentColor,
+      0 0 32px currentColor;
+    filter: contrast(1.2) brightness(1.1);
+  }
+  
+  /* Enhanced glow effect for large text */
+  .text-shadow-glow-large {
+    text-shadow: 
+      0 0 12px currentColor,
+      0 0 24px currentColor,
+      0 0 36px currentColor,
+      0 0 48px currentColor,
+      0 0 60px currentColor;
+    filter: contrast(1.3) brightness(1.2);
+  }
+  
+  /* Drop shadow glow effect for icons */
+  .drop-shadow-glow {
+    filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.6)) 
+            drop-shadow(0 0 16px rgba(0, 255, 136, 0.4))
+            drop-shadow(0 0 24px rgba(0, 255, 136, 0.2));
+  }
+  
+  /* Focus styles */
+  .focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-dark-300;
+  }
+}
+
+/* Custom animations */
+@keyframes matrix-rain {
+  0% {
+    transform: translateY(-100vh);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
+
+.matrix-rain {
+  animation: matrix-rain 10s linear infinite;
+}
+
+/* Loading spinner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Typing cursor */
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+.typing-cursor::after {
+  content: '|';
+  animation: blink 1s infinite;
+  color: #00ff88;
+}
+
+/* Gradient animations */
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.gradient-animate {
+  background-size: 200% 200%;
+  animation: gradient 3s ease infinite;
+    }
