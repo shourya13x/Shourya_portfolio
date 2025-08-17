@@ -2,6 +2,9 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import type { DeviceType, DeviceCapabilities } from '@/types';
 
+// Export glassmorphism utilities
+export * from './glassmorphism';
+
 // Utility function for merging Tailwind classes
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -215,14 +218,10 @@ export const rgbToHex = (r: number, g: number, b: number): string => {
 
 // Performance monitoring
 export const measurePerformance = async <T>(
-  name: string,
+  _name: string,
   fn: () => Promise<T> | T
 ): Promise<T> => {
-  const start = performance.now();
   const result = await fn();
-  const end = performance.now();
-  
-  console.log(`${name} took ${end - start} milliseconds`);
   return result;
 };
 
@@ -240,8 +239,6 @@ export const createIntersectionObserver = (
 
 // Resume download utility
 export const downloadResume = (): void => {
-  console.log('Starting resume download...');
-  
   // Check if we're in a browser environment
   if (typeof window === 'undefined') {
     console.error('Not in browser environment');
@@ -249,7 +246,6 @@ export const downloadResume = (): void => {
   }
   
   const resumeUrl = '/Shourya_s_Resume_120.pdf';
-  console.log('Attempting to download from:', resumeUrl);
   
   // Simple and direct approach
   try {
@@ -266,14 +262,11 @@ export const downloadResume = (): void => {
     link.click();
     document.body.removeChild(link);
     
-    console.log('Download link clicked');
-    
   } catch (error) {
     console.error('Direct download failed:', error);
     
     // Fallback: Open in new tab
     try {
-      console.log('Trying to open in new tab...');
       window.open(resumeUrl, '_blank', 'noopener,noreferrer');
     } catch (fallbackError) {
       console.error('Fallback failed:', fallbackError);
@@ -281,6 +274,3 @@ export const downloadResume = (): void => {
     }
   }
 };
-
-// Export haptic utilities
-export * from './haptics';

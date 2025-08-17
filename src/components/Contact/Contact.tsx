@@ -155,7 +155,7 @@ const Contact: React.FC = () => {
   
   return (
     <section id="contact" ref={elementRef} className="py-20 lg:py-32 relative">
-      <div className="max-w-7xl mx-auto px-6">
+              <div className="max-w-7xl mx-auto px-6 relative z-10">
         <motion.div
           variants={containerVariants}
           initial="hidden"

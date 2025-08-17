@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  // ExternalLink, 
   Github, 
   Eye, 
   Code, 
@@ -24,10 +23,10 @@ import {
   Shield,
   Globe,
   Smartphone as Mobile,
-  Cpu,
-  // Network
+  Cpu
 } from 'lucide-react';
 import { useVisibility } from '@/hooks';
+import '@/components/FuturisticEffects/FuturisticEffects.css';
 import { cn } from '@/utils';
 import TouchCard from '@/components/TouchCard';
 import type { Project } from '@/types';
@@ -35,7 +34,6 @@ import type { Project } from '@/types';
 const Projects: React.FC = () => {
   const { isVisible, elementRef } = useVisibility(0.2);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  // const [hoveredProject, setHoveredProject] = useState<string | null>(null);
   
   const categories = [
     { id: 'all', label: 'All Projects', icon: Package },
@@ -241,50 +239,153 @@ const Projects: React.FC = () => {
 
   const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
     const projectIcons = getProjectIcons(project.id);
+    const [isHovered, setIsHovered] = React.useState(false);
     
     return (
-      <TouchCard className="group" intensity={0.3} glowColor="#0099ff">
-        <div className="card h-full flex flex-col overflow-hidden">
-          {/* Project Image */}
-          <div className="relative aspect-video bg-gradient-to-br from-primary/10 via-secondary/5 to-primary/5 mb-6 rounded-lg overflow-hidden group-hover:bg-gradient-to-br group-hover:from-primary/15 group-hover:via-secondary/10 group-hover:to-primary/10 transition-all duration-500">
-            {/* Background Pattern */}
-            <div className="absolute inset-0 opacity-20">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[length:20px_20px]"></div>
-            </div>
-            {/* Project Icons Overlay */}
+      <div
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className="relative"
+      >
+        <TouchCard className="holo-card group" intensity={0.4} glowColor="#0099ff">
+          <motion.div 
+            className="relative p-6 rounded-2xl border border-white/10 bg-transparent hover:border-white/20 transition-all duration-500 h-full flex flex-col overflow-hidden"
+            whileHover={{ 
+              y: -10,
+              rotateX: 5,
+              rotateY: 5,
+              transition: { duration: 0.3, type: "spring", stiffness: 300 }
+            }}
+            style={{
+              transformStyle: "preserve-3d",
+              perspective: 1000,
+            }}
+          >
+          {/* Enhanced Project Image */}
+          <motion.div 
+            className="relative aspect-video bg-transparent mb-6 rounded-lg border border-white/5 group-hover:border-white/10 transition-all duration-500"
+            whileHover={{ 
+              boxShadow: "0 20px 40px rgba(0, 153, 255, 0.2)",
+              borderColor: "rgba(0, 153, 255, 0.3)",
+            }}
+            transition={{ duration: 0.3 }}
+          >
+            {/* Animated Background Pattern */}
+            <motion.div 
+              className="absolute inset-0 opacity-5"
+              animate={isHovered ? {
+                opacity: [0.05, 0.1, 0.05],
+              } : { opacity: 0.05 }}
+              transition={{
+                duration: 2,
+                repeat: isHovered ? Infinity : 0,
+                ease: "easeInOut",
+              }}
+            >
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[length:20px_20px]"></div>
+            </motion.div>
+            
+            {/* Interactive Project Icons Overlay */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="grid grid-cols-2 gap-2 sm:gap-3 p-3 sm:p-4">
+              <div className="grid grid-cols-2 gap-2 sm:gap-3 p-3 sm:p-4 relative z-10">
                 {projectIcons.map(({ icon: Icon, label }, iconIndex) => (
-                  <div
+                  <motion.div
                     key={iconIndex}
-                    className="flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 transition-all duration-300"
+                    className="group flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 bg-white/3 rounded-xl border border-white/5 relative"
                     title={label}
+                    aria-label={label}
+                    whileHover={{ 
+                      scale: 1.1,
+                      backgroundColor: 'rgba(0, 153, 255, 0.1)',
+                      borderColor: 'rgba(0, 153, 255, 0.3)',
+                    }}
+                    animate={isHovered ? {
+                      y: [0, -5, 0],
+                      rotate: [0, 5, -5, 0],
+                    } : { y: 0, rotate: 0 }}
+                    transition={{
+                      duration: 2,
+                      repeat: isHovered ? Infinity : 0,
+                      ease: "easeInOut",
+                      delay: iconIndex * 0.2,
+                    }}
                   >
-                    <Icon 
-                      size={24} 
-                      className="text-white/70 transition-all duration-300"
+                    {/* Tooltip label */}
+                    <div className="absolute bottom-1 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-md bg-dark-200/90 border border-white/10 text-[10px] sm:text-xs text-white/80 whitespace-nowrap shadow-lg opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 pointer-events-none z-20">
+                      {label}
+                    </div>
+                    {/* Icon glow effect */}
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl"
+                      animate={isHovered ? {
+                        opacity: [0, 0.3, 0],
+                        scale: [0.8, 1.2, 0.8],
+                      } : { opacity: 0, scale: 0.8 }}
+                      transition={{
+                        duration: 1.5,
+                        repeat: isHovered ? Infinity : 0,
+                        ease: "easeInOut",
+                        delay: iconIndex * 0.1,
+                      }}
                     />
-                  </div>
+                    
+                    <motion.div
+                      animate={isHovered ? {
+                        rotate: [0, 10, -10, 0],
+                        scale: [1, 1.1, 1],
+                      } : { rotate: 0, scale: 1 }}
+                      transition={{
+                        duration: 1,
+                        repeat: isHovered ? Infinity : 0,
+                        ease: "easeInOut",
+                        delay: iconIndex * 0.15,
+                      }}
+                    >
+                      <Icon 
+                        size={24} 
+                        className="text-white/70 group-hover:text-white transition-all duration-300 relative z-10"
+                      />
+                    </motion.div>
+                  </motion.div>
                 ))}
               </div>
             </div>
             
-            {/* Status Badge */}
-            <div className="absolute top-3 right-3">
+            {/* Scanning line effect */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/20 to-transparent"
+              style={{
+                width: '2px',
+                background: 'linear-gradient(90deg, transparent, rgba(0,153,255,0.6), transparent)',
+              }}
+              animate={isHovered ? {
+                x: [-50, 400],
+              } : { x: -50 }}
+              transition={{
+                duration: 2,
+                repeat: isHovered ? Infinity : 0,
+                ease: "easeInOut",
+                repeatDelay: 1,
+              }}
+            />
+          </motion.div>
+            
+          {/* Status Badge */}
+          <div className="absolute top-3 right-3">
               <span className={cn(
                 'px-2 py-1 text-xs font-semibold rounded-full',
-                project.status === 'completed' && 'bg-primary/20 text-primary',
-                project.status === 'in-progress' && 'bg-yellow-500/20 text-yellow-400',
-                project.status === 'archived' && 'bg-gray-500/20 text-gray-400'
+                project.status === 'completed' && 'bg-primary/10 text-primary border border-primary/20',
+                project.status === 'in-progress' && 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20',
+                project.status === 'archived' && 'bg-gray-500/10 text-gray-400 border border-gray-500/20'
               )}>
                 {project.status === 'completed' && 'Completed'}
                 {project.status === 'in-progress' && 'In Progress'}
                 {project.status === 'archived' && 'Archived'}
               </span>
             </div>
-          </div>
+          </motion.div>
         
-        {/* Project Content */}
+          {/* Project Content */}
         <div className="flex-1 flex flex-col">
           <div className="flex items-start justify-between mb-3 gap-2">
             <h3 className="text-lg sm:text-xl font-bold text-white leading-tight">
@@ -299,58 +400,194 @@ const Projects: React.FC = () => {
             {project.description}
           </p>
           
-          {/* Technologies */}
+          {/* Enhanced Technologies */}
           <div className="flex flex-wrap gap-2 mb-4">
-            {project.technologies.slice(0, 4).map((tech) => (
-              <span
+            {project.technologies.slice(0, 4).map((tech, techIndex) => (
+              <motion.span
                 key={tech}
-                className="px-3 py-1 text-xs bg-primary/10 text-primary rounded-full font-mono"
+                className="px-3 py-1 text-xs bg-primary/5 text-primary rounded-full font-mono border border-primary/10 relative overflow-hidden cursor-pointer"
+                whileHover={{ 
+                  scale: 1.1,
+                  backgroundColor: 'rgba(0, 255, 136, 0.15)',
+                  borderColor: 'rgba(0, 255, 136, 0.3)',
+                  color: '#ffffff',
+                  transition: { duration: 0.2 }
+                }}
+                animate={isHovered ? {
+                  y: [0, -3, 0],
+                  boxShadow: [
+                    '0 0 5px rgba(0, 255, 136, 0.2)',
+                    '0 0 15px rgba(0, 255, 136, 0.4)',
+                    '0 0 5px rgba(0, 255, 136, 0.2)'
+                  ],
+                } : {
+                  y: 0,
+                  boxShadow: '0 0 0px transparent',
+                }}
+                transition={{
+                  duration: 1.5,
+                  repeat: isHovered ? Infinity : 0,
+                  ease: "easeInOut",
+                  delay: techIndex * 0.1,
+                }}
               >
-                {tech}
-              </span>
+                {/* Shimmer effect */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                  animate={isHovered ? {
+                    x: ['-100%', '200%'],
+                  } : { x: '-100%' }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: isHovered ? Infinity : 0,
+                    ease: "easeInOut",
+                    delay: techIndex * 0.05,
+                    repeatDelay: 0.5,
+                  }}
+                />
+                
+                <span className="relative z-10">{tech}</span>
+              </motion.span>
             ))}
             {project.technologies.length > 4 && (
-              <span className="px-3 py-1 text-xs bg-white/10 text-white/60 rounded-full font-mono">
-                +{project.technologies.length - 4} more
-              </span>
+              <motion.span 
+                className="px-3 py-1 text-xs bg-white/5 text-white/60 rounded-full font-mono border border-white/10 relative overflow-hidden"
+                whileHover={{ 
+                  scale: 1.1,
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  color: 'rgba(255, 255, 255, 0.9)',
+                  transition: { duration: 0.2 }
+                }}
+                animate={isHovered ? {
+                  opacity: [0.6, 1, 0.6],
+                } : { opacity: 0.6 }}
+                transition={{
+                  duration: 2,
+                  repeat: isHovered ? Infinity : 0,
+                  ease: "easeInOut",
+                }}
+              >
+                <span className="relative z-10">+{project.technologies.length - 4} more</span>
+              </motion.span>
             )}
           </div>
           
-          {/* Action Links */}
+          {/* Enhanced Action Links */}
           <div className="flex flex-wrap gap-3 mt-auto">
             {project.liveUrl && (
-              <a
+              <motion.a
                 href={project.liveUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-xs sm:text-sm text-primary hover:text-primary/80 transition-colors"
+                className="flex items-center gap-2 text-xs sm:text-sm text-primary hover:text-primary/80 transition-colors relative group"
+                whileHover={{ 
+                  scale: 1.1,
+                  x: 5,
+                  transition: { duration: 0.2, type: "spring", stiffness: 300 }
+                }}
+                whileTap={{ scale: 0.9 }}
               >
-                <Eye size={14} />
-                Live Demo
-              </a>
+                {/* Magnetic glow effect */}
+                <motion.div
+                  className="absolute -inset-2 bg-primary/10 rounded-lg opacity-0 group-hover:opacity-100"
+                  whileHover={{ scale: 1.2 }}
+                  transition={{ duration: 0.2 }}
+                />
+                
+                <motion.div
+                  animate={isHovered ? {
+                    rotate: [0, 5, -5, 0],
+                    scale: [1, 1.1, 1],
+                  } : { rotate: 0, scale: 1 }}
+                  transition={{
+                    duration: 1,
+                    repeat: isHovered ? Infinity : 0,
+                    ease: "easeInOut",
+                  }}
+                >
+                  <Eye size={14} />
+                </motion.div>
+                <span className="relative z-10">Live Demo</span>
+              </motion.a>
             )}
             
             {project.githubUrl && (
-              <a
+              <motion.a
                 href={project.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-xs sm:text-sm text-white/70 hover:text-white/90 transition-colors"
+                className="flex items-center gap-2 text-xs sm:text-sm text-white/70 hover:text-white/90 transition-colors relative group"
+                whileHover={{ 
+                  scale: 1.1,
+                  x: 5,
+                  transition: { duration: 0.2, type: "spring", stiffness: 300 }
+                }}
+                whileTap={{ scale: 0.9 }}
               >
-                <Github size={14} />
-                Code
-              </a>
+                {/* Magnetic glow effect */}
+                <motion.div
+                  className="absolute -inset-2 bg-white/5 rounded-lg opacity-0 group-hover:opacity-100"
+                  whileHover={{ scale: 1.2 }}
+                  transition={{ duration: 0.2 }}
+                />
+                
+                <motion.div
+                  animate={isHovered ? {
+                    rotate: [0, -5, 5, 0],
+                    scale: [1, 1.1, 1],
+                  } : { rotate: 0, scale: 1 }}
+                  transition={{
+                    duration: 1.2,
+                    repeat: isHovered ? Infinity : 0,
+                    ease: "easeInOut",
+                    delay: 0.2,
+                  }}
+                >
+                  <Github size={14} />
+                </motion.div>
+                <span className="relative z-10">Code</span>
+              </motion.a>
             )}
           </div>
+          
+          {/* Floating particles on hover */}
+          {isHovered && (
+            <>
+              {Array.from({ length: 6 }).map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute w-1 h-1 bg-primary/60 rounded-full pointer-events-none"
+                  style={{
+                    left: `${Math.random() * 100}%`,
+                    top: `${Math.random() * 100}%`,
+                  }}
+                  animate={{
+                    y: [0, -30 - Math.random() * 20, 0],
+                    x: [0, (Math.random() - 0.5) * 40, 0],
+                    opacity: [0, 1, 0],
+                    scale: [0, 1.5, 0],
+                  }}
+                  transition={{
+                    duration: 2 + Math.random(),
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: i * 0.1,
+                  }}
+                />
+              ))}
+            </>
+          )}
         </div>
-        </div>
-      </TouchCard>
+        </TouchCard>
+      </div>
     );
   };
   
   return (
     <section id="projects" ref={elementRef} className="py-12 sm:py-20 lg:py-32 relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+      {/* Ultra-Subtle Background Overlay - Minimal interference with space effects */}
+      <div className="absolute inset-0 bg-gradient-to-br from-dark-300/3 via-dark-200/2 to-dark-300/3" />
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -359,9 +596,9 @@ const Projects: React.FC = () => {
         >
           {/* Section Header */}
           <motion.div variants={itemVariants} className="text-center">
-            <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold mb-6">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold mb-6 whitespace-nowrap">
               <span className="text-primary">02.</span>{' '}
-              <span className="text-white">Featured Projects</span>
+              <span className="holographic-text" data-text="Featured Projects">Featured Projects</span>
             </h2>
             <p className="text-base sm:text-lg text-white/80 max-w-3xl mx-auto px-4">
               Here are some of my favorite projects that showcase my skills and experience. 
@@ -369,25 +606,97 @@ const Projects: React.FC = () => {
             </p>
           </motion.div>
           
-          {/* Category Filter */}
+          {/* Enhanced Category Filter */}
           <motion.div variants={itemVariants} className="flex justify-center">
-            <div className="flex flex-wrap gap-2 p-2 glass rounded-full justify-center">
+            <motion.div 
+              className="flex flex-wrap gap-2 p-2 bg-white/5 backdrop-blur-md border border-white/10 rounded-full justify-center relative overflow-hidden"
+              whileHover={{ 
+                boxShadow: "0 10px 30px rgba(0, 153, 255, 0.1)",
+                borderColor: "rgba(0, 153, 255, 0.2)",
+              }}
+              transition={{ duration: 0.3 }}
+            >
+              {/* Animated background */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-primary/5 to-secondary/5"
+                animate={{
+                  x: ['-100%', '100%', '-100%'],
+                }}
+                transition={{
+                  duration: 8,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+              />
+              
               {categories.map((category) => (
-                <button
+                <motion.button
                   key={category.id}
                   onClick={() => setSelectedCategory(category.id)}
                   className={cn(
-                    'flex items-center gap-2 px-3 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200',
+                    'relative flex items-center gap-2 px-3 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 overflow-hidden',
                     selectedCategory === category.id
                       ? 'bg-primary text-black shadow-lg shadow-primary/25'
                       : 'text-white/70 hover:text-white/90'
                   )}
+                  whileHover={{ 
+                    scale: 1.08,
+                    y: -2,
+                    transition: { duration: 0.2, type: "spring", stiffness: 300 }
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                  animate={selectedCategory === category.id ? {
+                    boxShadow: [
+                      '0 0 10px rgba(0, 255, 136, 0.3)',
+                      '0 0 20px rgba(0, 255, 136, 0.5)',
+                      '0 0 10px rgba(0, 255, 136, 0.3)'
+                    ],
+                  } : {
+                    boxShadow: '0 0 0px transparent',
+                  }}
+                  transition={{
+                    boxShadow: {
+                      duration: 2,
+                      repeat: selectedCategory === category.id ? Infinity : 0,
+                      ease: "easeInOut",
+                    }
+                  }}
                 >
-                  <category.icon size={16} />
-                  {category.label}
-                </button>
+                  {/* Ripple effect for active state */}
+                  {selectedCategory === category.id && (
+                    <motion.div
+                      className="absolute inset-0 bg-white/10 rounded-full"
+                      animate={{
+                        scale: [0, 2],
+                        opacity: [0.3, 0],
+                      }}
+                      transition={{
+                        duration: 1.5,
+                        repeat: Infinity,
+                        ease: "easeOut",
+                      }}
+                    />
+                  )}
+                  
+                  {/* Icon with animation */}
+                  <motion.div
+                    animate={selectedCategory === category.id ? {
+                      rotate: [0, 10, -10, 0],
+                      scale: [1, 1.1, 1],
+                    } : { rotate: 0, scale: 1 }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: selectedCategory === category.id ? Infinity : 0,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    <category.icon size={16} />
+                  </motion.div>
+                  
+                  <span className="relative z-10">{category.label}</span>
+                </motion.button>
               ))}
-            </div>
+            </motion.div>
           </motion.div>
           
           {/* Projects Grid */}

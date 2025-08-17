@@ -117,7 +117,7 @@ const Experience: React.FC = () => {
   
   return (
     <section id="experience" ref={elementRef} className="py-20 lg:py-32 relative">
-      <div className="max-w-7xl mx-auto px-6">
+              <div className="max-w-7xl mx-auto px-6 relative z-10">
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -126,7 +126,7 @@ const Experience: React.FC = () => {
         >
           {/* Section Header */}
           <motion.div variants={itemVariants} className="text-center">
-            <h2 className="text-3xl lg:text-5xl font-bold mb-6">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold mb-6 whitespace-nowrap">
               <span className="text-primary">03.</span>{' '}
               <span className="text-white">Experience</span>
             </h2>
@@ -351,7 +351,7 @@ const Experience: React.FC = () => {
                       <ul className="space-y-4">
                         {selectedExperience.achievements.map((achievement, index) => (
                           <motion.li
-                            key={index}
+                            key={`achievement-${index}-${achievement.slice(0, 20)}`}
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: index * 0.1 }}

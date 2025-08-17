@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Terminal, Monitor } from 'lucide-react';
+import { ArrowUp } from 'lucide-react';
 import { useViewMode } from '@/hooks';
 import { cn } from '@/utils';
 
@@ -71,6 +72,8 @@ const CLIToggleSlider: React.FC<CLIToggleSliderProps> = ({
     }
   };
 
+
+
   return (
     <motion.div
       className={cn(
@@ -84,10 +87,7 @@ const CLIToggleSlider: React.FC<CLIToggleSliderProps> = ({
     >
       <motion.button
         onClick={() => {
-          console.log('🔘 Toggle button clicked!');
-          console.log('Current viewMode before toggle:', viewMode);
           toggleViewMode();
-          console.log('Toggle function called');
         }}
         className={cn(
           'relative flex items-center gap-3 rounded-full font-mono',
@@ -157,6 +157,35 @@ const CLIToggleSlider: React.FC<CLIToggleSliderProps> = ({
           </span>
         )}
       </motion.button>
+
+      {/* Callout: toggle me (shown only in GUI mode) */}
+      {viewMode === 'gui' && (
+        <motion.div
+          className="absolute left-1/2 top-full mt-2 -translate-x-1/2 text-white/90 pointer-events-none"
+          initial={{ opacity: 0, y: 8, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ delay: 1.2, duration: 0.3 }}
+        >
+          {/* ArrowUp icon with glow, matching PlayArrow style */}
+          <motion.div
+            className="flex flex-col items-center gap-2"
+            animate={{ y: [0, -4, 0] }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            <ArrowUp 
+              size={24} 
+              className="text-white drop-shadow-glow"
+            />
+            <motion.span
+              className="text-sm font-mono text-white/90"
+              animate={{ opacity: [1, 0.4, 1] }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              toggle me
+            </motion.span>
+          </motion.div>
+        </motion.div>
+      )}
     </motion.div>
   );
 };

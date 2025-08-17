@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { useHaptics } from '@/utils/haptics';
 
 interface TouchCardProps {
   children: React.ReactNode;
@@ -17,8 +16,8 @@ const TouchCard: React.FC<TouchCardProps> = ({
 }) => {
   const [isPressed, setIsPressed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
-  const haptics = useHaptics();
 
   // Motion values for 3D transforms
   const x = useMotionValue(0);
@@ -34,68 +33,112 @@ const TouchCard: React.FC<TouchCardProps> = ({
   const scale = useTransform(springX, [-100, 100], [0.95, 1.05]);
 
   React.useEffect(() => {
-    const mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    setIsMobile(mobile);
+    try {
+      const mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      setIsMobile(mobile);
+    } catch (error) {
+      console.warn('Error detecting mobile device in TouchCard:', error);
+      setHasError(true);
+    }
   }, []);
 
   const handleTouchStart = (event: React.TouchEvent) => {
-    if (!isMobile) return;
-    setIsPressed(true);
-    haptics.light(); // Add haptic feedback
-    const touch = event.touches[0];
-    const rect = cardRef.current?.getBoundingClientRect();
-    if (rect) {
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      x.set((touch.clientX - centerX) * 0.5);
-      y.set((touch.clientY - centerY) * 0.5);
+    try {
+      if (!isMobile) return;
+      // Only handle single touches to avoid interfering with scrolling
+      if (event.touches.length !== 1) return;
+      
+      setIsPressed(true);
+      const touch = event.touches[0];
+      const rect = cardRef.current?.getBoundingClientRect();
+      if (rect) {
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        x.set((touch.clientX - centerX) * 0.5);
+        y.set((touch.clientY - centerY) * 0.5);
+      }
+    } catch (error) {
+      console.warn('Error in TouchCard touch start:', error);
+      setHasError(true);
     }
   };
 
   const handleTouchMove = (event: React.TouchEvent) => {
-    if (!isMobile || !isPressed) return;
-    const touch = event.touches[0];
-    const rect = cardRef.current?.getBoundingClientRect();
-    if (rect) {
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      x.set((touch.clientX - centerX) * 0.5);
-      y.set((touch.clientY - centerY) * 0.5);
+    try {
+      if (!isMobile || !isPressed) return;
+      // Only handle single touches and don't interfere with scrolling
+      if (event.touches.length !== 1) return;
+      
+      const touch = event.touches[0];
+      const rect = cardRef.current?.getBoundingClientRect();
+      if (rect) {
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        x.set((touch.clientX - centerX) * 0.5);
+        y.set((touch.clientY - centerY) * 0.5);
+      }
+    } catch (error) {
+      console.warn('Error in TouchCard touch move:', error);
+      setHasError(true);
     }
   };
 
   const handleTouchEnd = () => {
-    setIsPressed(false);
-    x.set(0);
-    y.set(0);
+    try {
+      setIsPressed(false);
+      x.set(0);
+      y.set(0);
+    } catch (error) {
+      console.warn('Error in TouchCard touch end:', error);
+      setHasError(true);
+    }
   };
 
   const handleMouseMove = (event: React.MouseEvent) => {
-    if (isMobile) return;
-    const rect = cardRef.current?.getBoundingClientRect();
-    if (rect) {
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      x.set((event.clientX - centerX) * 0.3);
-      y.set((event.clientY - centerY) * 0.3);
+    try {
+      if (isMobile) return;
+      const rect = cardRef.current?.getBoundingClientRect();
+      if (rect) {
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        x.set((event.clientX - centerX) * 0.3);
+        y.set((event.clientY - centerY) * 0.3);
+      }
+    } catch (error) {
+      console.warn('Error in TouchCard mouse move:', error);
+      setHasError(true);
     }
   };
 
   const handleMouseLeave = () => {
-    if (isMobile) return;
-    x.set(0);
-    y.set(0);
+    try {
+      if (isMobile) return;
+      x.set(0);
+      y.set(0);
+    } catch (error) {
+      console.warn('Error in TouchCard mouse leave:', error);
+      setHasError(true);
+    }
   };
+
+  // Don't render if there's an error
+  if (hasError) {
+    return <div className={className}>{children}</div>;
+  }
 
   return (
     <motion.div
       ref={cardRef}
-      className={`touch-card ${className}`}
+      className={`touch-card mobile-safe ${className}`}
       style={{
         rotateX,
         rotateY,
         scale: isMobile ? (isPressed ? 0.98 : 1) : scale,
-        transformStyle: 'preserve-3d'
+        transformStyle: 'preserve-3d',
+        touchAction: 'manipulation', // Allow system touch gestures but prevent double-tap zoom
+        WebkitTouchCallout: 'none', // Disable iOS callout
+        WebkitUserSelect: 'none', // Disable text selection
+        userSelect: 'none'
       }}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}

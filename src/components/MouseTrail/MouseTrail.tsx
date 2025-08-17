@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 interface MouseTrailProps {
   enabled?: boolean;
@@ -7,176 +8,270 @@ interface MouseTrailProps {
   animationDuration?: number;
   throttleDelay?: number;
   glowColor?: string;
-  particleColor?: string;
 }
 
-// Enhanced performance detection
-const getPerformanceLevel = () => {
-  const canvas = document.createElement('canvas');
-  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  const isLowEnd = navigator.hardwareConcurrency <= 4 || isMobile;
-  
-  // Check for very low-end devices
-  const isVeryLowEnd = navigator.hardwareConcurrency <= 2 || 
-                       (window.screen && window.screen.width < 400) ||
-                       /Android.*4\.|Android.*5\./i.test(navigator.userAgent);
-  
-  return {
-    isLowEnd,
-    isMobile,
-    isVeryLowEnd,
-    hasWebGL: !!gl
-  };
-};
+interface WavePoint {
+  x: number;
+  y: number;
+  timestamp: number;
+  id: string;
+}
 
 const MouseTrail: React.FC<MouseTrailProps> = ({
   enabled = true,
-  particleSize = 10,
-  trailLength = 50,
-  animationDuration = 1000,
-  throttleDelay = 20,
-  glowColor = '#FFFFFF',
-  particleColor = '#FFFFFF'
+  particleSize = 6,
+  trailLength = 8,
+  animationDuration = 400,
+  throttleDelay = 80,
+  glowColor = '#00FF88'
 }) => {
+  const [wavePoints, setWavePoints] = useState<WavePoint[]>([]);
   const lastMouseMove = useRef<number>(0);
-  const particles = useRef<HTMLDivElement[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
-  const performanceLevel = useRef(getPerformanceLevel());
   const animationFrameId = useRef<number>();
+  const touchRef = useRef<{ x: number; y: number } | null>(null);
 
-  // Adjust settings based on device performance
-  const adjustedSettings = {
-    trailLength: performanceLevel.current.isVeryLowEnd ? 5 : 
-                 performanceLevel.current.isLowEnd ? Math.min(trailLength, 10) : trailLength,
-    throttleDelay: performanceLevel.current.isVeryLowEnd ? 100 :
-                   performanceLevel.current.isLowEnd ? Math.max(throttleDelay, 80) : throttleDelay,
-    animationDuration: performanceLevel.current.isVeryLowEnd ? animationDuration * 0.3 :
-                       performanceLevel.current.isLowEnd ? animationDuration * 0.5 : animationDuration,
-    particleSize: performanceLevel.current.isMobile ? particleSize * 0.6 : particleSize
-  };
+  // Create wave effect by adding points along the mouse path
+  const addWavePoint = useCallback((x: number, y: number) => {
+    if (!enabled) return;
 
-  // Disable on mobile devices for maximum smoothness
-  const shouldDisable = performanceLevel.current.isMobile;
-
-  // Throttled mouse move handler with performance optimization
-  const handleMouseMove = useCallback((event: MouseEvent) => {
-    if (!enabled || shouldDisable) return;
-
-    const now = Date.now();
-    if (now - lastMouseMove.current < adjustedSettings.throttleDelay) return;
+    const now = performance.now(); // Use high-resolution timer
+    if (now - lastMouseMove.current < throttleDelay) return;
     lastMouseMove.current = now;
 
-    // Use requestAnimationFrame for smoother performance
+    const newPoint: WavePoint = {
+      x,
+      y,
+      timestamp: now,
+      id: `wave-${now}-${Math.random()}`
+    };
+
+    setWavePoints(prev => {
+      // More efficient filtering and limiting
+      const filtered = prev.filter(point => now - point.timestamp < animationDuration);
+      const newPoints = [...filtered, newPoint];
+      return newPoints.length > trailLength ? newPoints.slice(-trailLength) : newPoints;
+    });
+  }, [enabled, throttleDelay, animationDuration, trailLength]);
+
+  // Mouse move handler
+  const handleMouseMove = useCallback((event: MouseEvent) => {
     if (animationFrameId.current) {
       cancelAnimationFrame(animationFrameId.current);
     }
 
     animationFrameId.current = requestAnimationFrame(() => {
-      createParticle(event.clientX, event.clientY);
+      addWavePoint(event.clientX, event.clientY);
     });
-  }, [enabled, shouldDisable, adjustedSettings.throttleDelay]);
+  }, [addWavePoint]);
 
-  // Optimized particle creation with object pooling concept
-  const createParticle = useCallback((x: number, y: number) => {
-    if (!containerRef.current || particles.current.length >= adjustedSettings.trailLength) {
-      return;
+  // Touch move handler for mobile - passive to allow scrolling
+  const handleTouchMove = useCallback((event: TouchEvent) => {
+    const touch = event.touches[0];
+    if (touch) {
+      touchRef.current = { x: touch.clientX, y: touch.clientY };
+      
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
+      }
+
+      animationFrameId.current = requestAnimationFrame(() => {
+        addWavePoint(touch.clientX, touch.clientY);
+      });
     }
+  }, [addWavePoint]);
 
-    const particle = document.createElement('div');
-    
-    // Use CSS classes instead of inline styles for better performance
-    particle.className = 'mouse-trail-particle';
-    particle.style.cssText = `
-      position: fixed;
-      left: ${x - adjustedSettings.particleSize / 2}px;
-      top: ${y - adjustedSettings.particleSize / 2}px;
-      width: ${adjustedSettings.particleSize}px;
-      height: ${adjustedSettings.particleSize}px;
-      border-radius: 50%;
-      background-color: ${particleColor};
-      ${performanceLevel.current.isLowEnd ? '' : `box-shadow: 0 0 ${adjustedSettings.particleSize}px ${glowColor};`}
-      pointer-events: none;
-      z-index: 9999;
-      opacity: 1;
-      transform: scale(1);
-      transition: opacity ${adjustedSettings.animationDuration}ms ease-out, transform ${adjustedSettings.animationDuration}ms ease-out;
-    `;
-
-    containerRef.current.appendChild(particle);
-    particles.current.push(particle);
-
-    // Use requestAnimationFrame for animation
-    requestAnimationFrame(() => {
-      particle.style.opacity = '0';
-      particle.style.transform = 'scale(0.3)';
-    });
-
-    // Cleanup with more efficient timeout
-    setTimeout(() => {
-      if (particle.parentNode) {
-        particle.parentNode.removeChild(particle);
-      }
-      const index = particles.current.indexOf(particle);
-      if (index > -1) {
-        particles.current.splice(index, 1);
-      }
-    }, adjustedSettings.animationDuration);
-
-  }, [adjustedSettings, particleColor, glowColor, performanceLevel.current.isLowEnd]);
-
-  // Cleanup all particles
-  const cleanupParticles = useCallback(() => {
-    if (animationFrameId.current) {
-      cancelAnimationFrame(animationFrameId.current);
+  // Touch start handler - passive to allow scrolling
+  const handleTouchStart = useCallback((event: TouchEvent) => {
+    const touch = event.touches[0];
+    if (touch) {
+      touchRef.current = { x: touch.clientX, y: touch.clientY };
+      addWavePoint(touch.clientX, touch.clientY);
     }
-    
-    particles.current.forEach(particle => {
-      if (particle.parentNode) {
-        particle.parentNode.removeChild(particle);
-      }
-    });
-    particles.current = [];
-  }, []);
+  }, [addWavePoint]);
 
+  // Auto-cleanup old points - optimized with requestAnimationFrame
   useEffect(() => {
-    if (!enabled || shouldDisable) {
-      cleanupParticles();
-      return;
-    }
+    let cleanupFrameId: number;
+    
+    const cleanup = () => {
+      const now = performance.now();
+      setWavePoints(prev => {
+        const filtered = prev.filter(point => now - point.timestamp < animationDuration);
+        return filtered.length !== prev.length ? filtered : prev; // Only update if changed
+      });
+      cleanupFrameId = requestAnimationFrame(cleanup);
+    };
+    
+    cleanupFrameId = requestAnimationFrame(cleanup);
 
-    // Use passive listeners for better performance
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => {
+      if (cleanupFrameId) {
+        cancelAnimationFrame(cleanupFrameId);
+      }
+    };
+  }, [animationDuration]);
+
+  // Event listeners
+  useEffect(() => {
+    if (!enabled) return;
+
+    // All events are passive to allow normal scrolling behavior
+    const passiveOptions = { passive: true };
+    
+    // Mouse events for desktop
+    window.addEventListener('mousemove', handleMouseMove, passiveOptions);
+    
+    // Touch events for mobile - passive to allow scrolling
+    window.addEventListener('touchstart', handleTouchStart, passiveOptions);
+    window.addEventListener('touchmove', handleTouchMove, passiveOptions);
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
-      cleanupParticles();
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+      
+      if (animationFrameId.current) {
+        cancelAnimationFrame(animationFrameId.current);
+      }
     };
-  }, [enabled, shouldDisable, handleMouseMove, cleanupParticles]);
+  }, [enabled, handleMouseMove, handleTouchMove, handleTouchStart]);
 
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      cleanupParticles();
-    };
-  }, [cleanupParticles]);
+  if (!enabled || typeof document === 'undefined') return null;
 
-  // Don't render on low-end mobile devices
-  if (!enabled || shouldDisable) return null;
+  return createPortal(
+    <div
+      ref={containerRef}
+      className="fixed inset-0 pointer-events-none z-[99999]"
+      style={{ 
+        overflow: 'visible', // Allow effects to show everywhere
+        touchAction: 'auto', // Allow normal touch actions like scrolling
+        userSelect: 'none',   // Prevent text selection
+        isolation: 'isolate' // Create new stacking context
+      }}
+    >
 
-  return (
-    <>
-      <style>{`
-        .mouse-trail-particle {
-          will-change: opacity, transform;
-        }
-      `}</style>
-      <div
-        ref={containerRef}
-        className="fixed inset-0 pointer-events-none z-[9999]"
-      />
-    </>
+      <svg
+        width="100%"
+        height="100%"
+        className="absolute inset-0"
+        style={{ 
+          pointerEvents: 'none',
+          overflow: 'visible',
+          zIndex: '99999'
+        }}
+      >
+        <defs>
+          <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor={glowColor} stopOpacity="0" />
+            <stop offset="50%" stopColor={glowColor} stopOpacity="0.8" />
+            <stop offset="100%" stopColor={glowColor} stopOpacity="0" />
+          </linearGradient>
+          
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="8" result="coloredBlur"/> {/* Stronger glow */}
+            <feMerge> 
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+
+        {/* Wave path */}
+        {wavePoints.length > 1 && (
+          <g>
+            {/* Create smooth wave path */}
+            <path
+              d={createWavePath(wavePoints)}
+              fill="none"
+              stroke="#00FF88" // Direct color for debugging
+              strokeWidth="8" // Much thicker for visibility
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              filter="url(#glow)"
+              opacity={1} // Full opacity for debugging
+            />
+            
+            {/* Wave particles */}
+            {wavePoints.map((point) => {
+              const age = performance.now() - point.timestamp;
+              const progress = Math.min(age / animationDuration, 1); // Clamp to avoid negative values
+              const opacity = Math.max(0, 1 - progress);
+              const scale = Math.max(0.2, 1 - progress * 0.8);
+              
+              // Skip rendering if too faded
+              if (opacity < 0.01) return null;
+              
+              return (
+                <g key={point.id} style={{ willChange: 'transform, opacity' }}>
+                  {/* Main particle - DEBUGGING */}
+                  <circle
+                    cx={point.x}
+                    cy={point.y}
+                    r={particleSize * scale}
+                    fill="#00FF88" // Bright green for debugging
+                    opacity={1} // Full opacity for debugging
+                    stroke="#FFFFFF" // White border for visibility
+                    strokeWidth="2"
+                  />
+                  
+                  {/* Glow effect - only render if opacity is significant */}
+                  {opacity > 0.1 && (
+                    <circle
+                      cx={point.x}
+                      cy={point.y}
+                      r={particleSize * scale * 2}
+                      fill={glowColor}
+                      opacity={opacity * 0.3}
+                      style={{ willChange: 'opacity' }}
+                    />
+                  )}
+                  
+                  {/* Wave ripple effect - only early in animation */}
+                  {progress < 0.5 && opacity > 0.2 && (
+                    <circle
+                      cx={point.x}
+                      cy={point.y}
+                      r={particleSize * (1 + progress * 3)}
+                      fill="none"
+                      stroke={glowColor}
+                      strokeWidth="1"
+                      opacity={(1 - progress * 2) * 0.5}
+                      style={{ willChange: 'opacity' }}
+                    />
+                  )}
+                </g>
+              );
+            })}
+          </g>
+        )}
+      </svg>
+    </div>,
+    document.body
   );
+};
+
+// Helper function to create smooth wave path
+const createWavePath = (points: WavePoint[]): string => {
+  if (points.length < 2) return '';
+
+  let path = `M ${points[0].x} ${points[0].y}`;
+  
+  for (let i = 1; i < points.length; i++) {
+    const current = points[i];
+    const previous = points[i - 1];
+    
+    // Create smooth curves between points
+    const controlX = (previous.x + current.x) / 2;
+    const controlY = (previous.y + current.y) / 2;
+    
+    // Add some wave-like variation
+    const waveOffset = Math.sin(i * 0.5) * 5;
+    
+    path += ` Q ${controlX} ${controlY + waveOffset} ${current.x} ${current.y}`;
+  }
+  
+  return path;
 };
 
 export default MouseTrail;

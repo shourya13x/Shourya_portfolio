@@ -80,7 +80,7 @@ const MouseTrailDemo: React.FC<MouseTrailDemoProps> = ({ className = '' }) => {
         animationDuration={animationDuration}
         throttleDelay={throttleDelay}
         glowColor={glowColor}
-        particleColor={particleColor}
+
       />
 
       {/* Controls Panel */}

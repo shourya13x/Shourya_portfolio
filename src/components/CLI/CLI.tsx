@@ -165,8 +165,8 @@ const CLI: React.FC = () => {
         primary: '#00ff88',
         secondary: '#0099ff',
         accent: '#facc15',
-        background: '#0a0a0a',
-        surface: '#1a1a1a',
+        background: 'rgba(10, 10, 10, 0.85)',
+        surface: 'rgba(26, 26, 26, 0.90)',
         text: '#ffffff',
         muted: '#666666'
       }
@@ -178,8 +178,8 @@ const CLI: React.FC = () => {
         primary: '#00ff41',
         secondary: '#00cc33',
         accent: '#00ff88',
-        background: '#000000',
-        surface: '#0a0a0a',
+        background: 'rgba(0, 0, 0, 0.85)',
+        surface: 'rgba(10, 10, 10, 0.90)',
         text: '#00ff41',
         muted: '#00cc33'
       }
@@ -191,8 +191,8 @@ const CLI: React.FC = () => {
         primary: '#ff0080',
         secondary: '#00ffff',
         accent: '#ffff00',
-        background: '#0a0a0a',
-        surface: '#1a1a1a',
+        background: 'rgba(10, 10, 10, 0.85)',
+        surface: 'rgba(26, 26, 26, 0.90)',
         text: '#ffffff',
         muted: '#ff0080'
       }
@@ -204,8 +204,8 @@ const CLI: React.FC = () => {
         primary: '#00bfff',
         secondary: '#0080ff',
         accent: '#40e0d0',
-        background: '#001122',
-        surface: '#002244',
+        background: 'rgba(0, 17, 34, 0.85)',
+        surface: 'rgba(0, 34, 68, 0.90)',
         text: '#ffffff',
         muted: '#00bfff'
       }
@@ -330,7 +330,7 @@ const CLI: React.FC = () => {
       timestamp: new Date()
     };
     
-    setSession(prev => ({
+    setSession((prev: any) => ({
       ...prev,
       output: [...prev.output, newOutput]
     }));
@@ -341,7 +341,7 @@ const CLI: React.FC = () => {
     if (!trimmedInput) return;
     
     // Add command to history
-    setSession(prev => ({
+    setSession((prev: any) => ({
       ...prev,
       history: [...prev.history, trimmedInput],
       historyIndex: -1
@@ -399,12 +399,12 @@ const CLI: React.FC = () => {
         
       case 'cd':
         if (args.length === 0) {
-          setSession(prev => ({ ...prev, currentPath: '/portfolio' }));
+          setSession((prev: any) => ({ ...prev, currentPath: '/portfolio' }));
           addOutput('Changed to /portfolio');
         } else {
           const newPath = args[0];
           if (newPath === '..' || newPath === '../') {
-            setSession(prev => ({ ...prev, currentPath: '/portfolio' }));
+            setSession((prev: any) => ({ ...prev, currentPath: '/portfolio' }));
             addOutput('Changed to /portfolio');
           } else {
             addOutput(`Directory not found: ${newPath}`, 'error');
@@ -500,7 +500,7 @@ const CLI: React.FC = () => {
         break;
         
       case 'clear':
-        setSession(prev => ({
+        setSession((prev: any) => ({
           ...prev,
           output: [{
             id: 'welcome-clear',
@@ -606,7 +606,7 @@ const CLI: React.FC = () => {
         const newIndex = session.historyIndex === -1 
           ? session.history.length - 1 
           : Math.max(0, session.historyIndex - 1);
-        setSession(prev => ({ ...prev, historyIndex: newIndex }));
+        setSession((prev: any) => ({ ...prev, historyIndex: newIndex }));
         setCurrentInput(session.history[newIndex] || '');
       }
     } else if (e.key === 'ArrowDown') {
@@ -618,10 +618,10 @@ const CLI: React.FC = () => {
         // Navigate through history
         const newIndex = session.historyIndex + 1;
         if (newIndex >= session.history.length) {
-          setSession(prev => ({ ...prev, historyIndex: -1 }));
+          setSession((prev: any) => ({ ...prev, historyIndex: -1 }));
           setCurrentInput('');
         } else {
-          setSession(prev => ({ ...prev, historyIndex: newIndex }));
+          setSession((prev: any) => ({ ...prev, historyIndex: newIndex }));
           setCurrentInput(session.history[newIndex]);
         }
       }
@@ -712,7 +712,7 @@ const CLI: React.FC = () => {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
-            className="fixed inset-0 z-[10002] flex items-center justify-center bg-black/80 backdrop-blur-sm"
+            className="fixed inset-0 z-[10002] flex items-center justify-center bg-black/70 backdrop-blur-sm"
             onClick={() => setShowRobot(false)}
           >
             <motion.div
@@ -846,7 +846,7 @@ const CLI: React.FC = () => {
             </div>
             
             <AnimatePresence>
-              {session.output.map((output, index) => (
+              {session.output.map((output: any, index: number) => (
                 <motion.div
                   key={output.id}
                   initial={{ opacity: 0, y: 10 }}

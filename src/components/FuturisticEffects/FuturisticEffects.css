@@ -1,0 +1,716 @@
+/* Neon Grid Background - GPU Accelerated */
+.neon-grid {
+  background-image: 
+    linear-gradient(rgba(0, 255, 136, 0.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 136, 0.3) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: grid-pulse 6s ease-in-out infinite;
+  opacity: 0.8;
+  will-change: opacity;
+  transform: translateZ(0); /* Force GPU layer */
+}
+
+@keyframes grid-pulse {
+  0%, 100% { opacity: 0.2; transform: translateZ(0); }
+  50% { opacity: 0.4; transform: translateZ(0); }
+}
+
+/* Star Particles - GPU Optimized */
+.star-particle {
+  animation: twinkle linear infinite;
+  will-change: transform, opacity;
+  transform: translateZ(0); /* Force GPU layer */
+}
+
+@keyframes twinkle {
+  0%, 100% { 
+    opacity: 0.3;
+    transform: translateZ(0) scale3d(0.8, 0.8, 1);
+  }
+  50% { 
+    opacity: 1;
+    transform: translateZ(0) scale3d(1.2, 1.2, 1);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+  }
+}
+
+/* Ultra-Smooth Slow Falling Stars - Cinematic Effect */
+.falling-star {
+  animation: meteorFall cubic-bezier(0.25, 0.1, 0.25, 1) infinite;
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  width: 2px;
+  height: 2px;
+}
+
+.falling-star-core {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.9) 40%, rgba(255, 255, 255, 0.4) 80%, transparent 100%);
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+}
+
+.falling-star-trail {
+  position: absolute;
+  width: 1.5px;
+  transform: translate(-50%, -100%);
+  filter: blur(0.3px);
+  border-radius: 50% 50% 0 0;
+}
+
+/* Ultra-Smooth Slow Meteor Animation - Cinematic Grace */
+@keyframes meteorFall {
+  0% {
+    transform: translate3d(-150px, -150px, 0) rotate(315deg) scale(0.6);
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.2;
+    transform: translate3d(-120px, -120px, 0) rotate(315deg) scale(0.7);
+  }
+  15% {
+    opacity: 0.5;
+    transform: translate3d(-90px, -90px, 0) rotate(315deg) scale(0.85);
+  }
+  25% {
+    opacity: 0.8;
+    transform: translate3d(-50px, -50px, 0) rotate(315deg) scale(1);
+  }
+  75% {
+    opacity: 0.8;
+    transform: translate3d(calc(100vw - 50px), calc(100vh - 50px), 0) rotate(315deg) scale(1);
+  }
+  85% {
+    opacity: 0.5;
+    transform: translate3d(calc(100vw + 10px), calc(100vh + 10px), 0) rotate(315deg) scale(0.85);
+  }
+  92% {
+    opacity: 0.2;
+    transform: translate3d(calc(100vw + 50px), calc(100vh + 50px), 0) rotate(315deg) scale(0.7);
+  }
+  100% {
+    transform: translate3d(calc(100vw + 150px), calc(100vh + 150px), 0) rotate(315deg) scale(0.6);
+    opacity: 0;
+  }
+}
+
+/* Alternative slow meteor patterns for graceful variety */
+.falling-star:nth-child(3n) {
+  animation-name: meteorFall-variant1;
+  animation-timing-function: cubic-bezier(0.15, 0.25, 0.25, 0.95);
+}
+
+.falling-star:nth-child(5n) {
+  animation-name: meteorFall-variant2;
+  animation-timing-function: cubic-bezier(0.35, 0.15, 0.35, 0.85);
+}
+
+@keyframes meteorFall-variant1 {
+  0% {
+    transform: translate3d(-120px, -150px, 0) rotate(325deg) scale(0.5);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.3;
+    transform: translate3d(-90px, -120px, 0) rotate(325deg) scale(0.7);
+  }
+  20% {
+    opacity: 0.6;
+    transform: translate3d(-60px, -90px, 0) rotate(325deg) scale(0.9);
+  }
+  30% {
+    opacity: 0.9;
+    transform: translate3d(-30px, -60px, 0) rotate(325deg) scale(1.1);
+  }
+  70% {
+    opacity: 0.9;
+    transform: translate3d(calc(100vw - 30px), calc(100vh - 30px), 0) rotate(325deg) scale(1.1);
+  }
+  80% {
+    opacity: 0.6;
+    transform: translate3d(calc(100vw + 0px), calc(100vh + 0px), 0) rotate(325deg) scale(0.9);
+  }
+  90% {
+    opacity: 0.3;
+    transform: translate3d(calc(100vw + 30px), calc(100vh + 30px), 0) rotate(325deg) scale(0.7);
+  }
+  100% {
+    transform: translate3d(calc(100vw + 120px), calc(100vh + 120px), 0) rotate(325deg) scale(0.5);
+    opacity: 0;
+  }
+}
+
+@keyframes meteorFall-variant2 {
+  0% {
+    transform: translate3d(-130px, -100px, 0) rotate(310deg) scale(0.6);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.4;
+    transform: translate3d(-100px, -70px, 0) rotate(310deg) scale(0.8);
+  }
+  25% {
+    opacity: 0.7;
+    transform: translate3d(-70px, -40px, 0) rotate(310deg) scale(1);
+  }
+  35% {
+    opacity: 1;
+    transform: translate3d(-40px, -10px, 0) rotate(310deg) scale(1.2);
+  }
+  65% {
+    opacity: 1;
+    transform: translate3d(calc(100vw - 40px), calc(100vh - 40px), 0) rotate(310deg) scale(1.2);
+  }
+  75% {
+    opacity: 0.7;
+    transform: translate3d(calc(100vw - 10px), calc(100vh - 10px), 0) rotate(310deg) scale(1);
+  }
+  88% {
+    opacity: 0.4;
+    transform: translate3d(calc(100vw + 20px), calc(100vh + 20px), 0) rotate(310deg) scale(0.8);
+  }
+  100% {
+    transform: translate3d(calc(100vw + 130px), calc(100vh + 130px), 0) rotate(310deg) scale(0.6);
+    opacity: 0;
+  }
+}
+
+
+
+/* Corner Decorations - GPU Optimized */
+.cyber-corner {
+  animation: corner-glow 3s ease-in-out infinite;
+  will-change: opacity, box-shadow;
+  transform: translateZ(0);
+}
+
+@keyframes corner-glow {
+  0%, 100% { 
+    opacity: 0.6;
+    box-shadow: 0 0 5px rgba(0, 255, 136, 0.3);
+    transform: translateZ(0);
+  }
+  50% { 
+    opacity: 1;
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.6);
+    transform: translateZ(0);
+  }
+}
+
+/* Holographic Overlay - GPU Accelerated */
+.holographic-overlay {
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    rgba(0, 255, 136, 0.02) 25%,
+    rgba(0, 136, 255, 0.02) 50%,
+    rgba(136, 0, 255, 0.02) 75%,
+    transparent 100%
+  );
+  background-size: 400% 400%;
+  animation: holographic-shift 10s ease-in-out infinite;
+  will-change: background-position;
+  transform: translateZ(0);
+}
+
+@keyframes holographic-shift {
+  0%, 100% { background-position: 0% 50%; transform: translateZ(0); }
+  50% { background-position: 100% 50%; transform: translateZ(0); }
+}
+
+/* Holographic Text Effect - GPU Optimized */
+.holographic-text {
+  background: linear-gradient(
+    45deg,
+    #00ff88 0%,
+    #0088ff 25%,
+    #8800ff 50%,
+    #ff0088 75%,
+    #00ff88 100%
+  );
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: hologram-flow 4s ease-in-out infinite;
+  position: relative;
+  will-change: background-position;
+  transform: translateZ(0);
+}
+
+.holographic-text::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: inherit;
+  background-clip: text;
+  -webkit-background-clip: text;
+  filter: blur(1px);
+  opacity: 0.5;
+  z-index: -1;
+  transform: translateZ(0);
+}
+
+@keyframes hologram-flow {
+  0%, 100% { background-position: 0% 50%; transform: translateZ(0); }
+  50% { background-position: 100% 50%; transform: translateZ(0); }
+}
+
+/* Glitch Effect - GPU Optimized */
+.glitch-text {
+  position: relative;
+  display: inline-block;
+  transform: translateZ(0);
+}
+
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.8;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.glitch-text::before {
+  color: #ff0088;
+  animation: glitch-1 0.3s infinite;
+  clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+}
+
+.glitch-text::after {
+  color: #0088ff;
+  animation: glitch-2 0.3s infinite;
+  clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+}
+
+@keyframes glitch-1 {
+  0%, 14%, 15%, 49%, 50%, 99%, 100% { transform: translate3d(0, 0, 0); }
+  15%, 49% { transform: translate3d(-2px, 0, 0); }
+}
+
+@keyframes glitch-2 {
+  0%, 20%, 21%, 62%, 63%, 99%, 100% { transform: translate3d(0, 0, 0); }
+  21%, 62% { transform: translate3d(2px, 0, 0); }
+}
+
+/* Cyber Progress Bar - GPU Optimized */
+.cyber-progress {
+  position: relative;
+  background: rgba(0, 255, 136, 0.1);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  border-radius: 4px;
+  overflow: hidden;
+  transform: translateZ(0);
+}
+
+.cyber-progress::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 255, 136, 0.6) 50%,
+    transparent 100%
+  );
+  animation: cyber-scan-progress 2s linear infinite;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+@keyframes cyber-scan-progress {
+  0% { transform: translate3d(-100%, 0, 0); }
+  100% { transform: translate3d(100%, 0, 0); }
+}
+
+/* Holographic Card - GPU Accelerated */
+.holo-card {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 255, 136, 0.05) 0%,
+    rgba(0, 136, 255, 0.05) 50%,
+    rgba(136, 0, 255, 0.05) 100%
+  );
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 255, 136, 0.2);
+  box-shadow: 
+    0 0 20px rgba(0, 255, 136, 0.1),
+    inset 0 0 20px rgba(0, 255, 136, 0.05);
+  position: relative;
+  overflow: hidden;
+  transform: translateZ(0);
+}
+
+.holo-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 70%
+  );
+  animation: holo-shine 3s ease-in-out infinite;
+  pointer-events: none;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+@keyframes holo-shine {
+  0% { transform: translateZ(0) rotate(0deg); }
+  100% { transform: translateZ(0) rotate(360deg); }
+}
+
+/* Cyber Button - GPU Optimized */
+.cyber-button {
+  background: linear-gradient(45deg, rgba(0, 255, 136, 0.1), rgba(0, 136, 255, 0.1));
+  border: 2px solid rgba(0, 255, 136, 0.5);
+  color: #00ff88;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  transform: translateZ(0);
+}
+
+.cyber-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.2), transparent);
+  transition: transform 0.5s ease;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.cyber-button:hover::before {
+  transform: translate3d(200%, 0, 0);
+}
+
+.cyber-button:hover {
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.8);
+}
+
+/* Neon Border - GPU Optimized */
+.neon-border {
+  border: 2px solid rgba(0, 255, 136, 0.5);
+  box-shadow: 
+    0 0 10px rgba(0, 255, 136, 0.3),
+    inset 0 0 10px rgba(0, 255, 136, 0.1);
+  animation: neon-pulse 2s ease-in-out infinite alternate;
+  will-change: border-color, box-shadow;
+  transform: translateZ(0);
+}
+
+@keyframes neon-pulse {
+  from {
+    border-color: rgba(0, 255, 136, 0.5);
+    box-shadow: 
+      0 0 10px rgba(0, 255, 136, 0.3),
+      inset 0 0 10px rgba(0, 255, 136, 0.1);
+    transform: translateZ(0);
+  }
+  to {
+    border-color: rgba(0, 255, 136, 0.8);
+    box-shadow: 
+      0 0 20px rgba(0, 255, 136, 0.5),
+      inset 0 0 20px rgba(0, 255, 136, 0.2);
+    transform: translateZ(0);
+  }
+}
+
+/* Data Stream Effect */
+.data-stream {
+  position: relative;
+  overflow: hidden;
+}
+
+.data-stream::after {
+  content: '01010101010101010101010101010101010101010101';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  color: rgba(0, 255, 136, 0.1);
+  font-family: 'Courier New', monospace;
+  font-size: 8px;
+  line-height: 1.2;
+  animation: data-flow 10s linear infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes data-flow {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-100%); }
+}
+
+/* Constellation Lines - GPU Optimized */
+.constellation-lines {
+  opacity: 0.6;
+  will-change: opacity;
+  transform: translateZ(0);
+}
+
+.constellation-line {
+  animation: constellation-pulse linear infinite;
+  will-change: stroke-opacity, stroke-width;
+  transform: translateZ(0);
+}
+
+@keyframes constellation-pulse {
+  0%, 100% { 
+    stroke-opacity: 0.1; 
+    stroke-width: 0.5;
+    transform: translateZ(0);
+  }
+  50% { 
+    stroke-opacity: 0.3; 
+    stroke-width: 0.8;
+    transform: translateZ(0);
+  }
+}
+
+/* Enhanced Star Particles - Multiple variations */
+.star-particle {
+  animation: twinkle linear infinite;
+  will-change: transform, opacity;
+  transform: translateZ(0); /* Force GPU layer */
+}
+
+.star-particle:nth-child(3n) {
+  animation-name: twinkle-variant-1;
+}
+
+.star-particle:nth-child(5n) {
+  animation-name: twinkle-variant-2;
+}
+
+@keyframes twinkle-variant-1 {
+  0%, 100% { 
+    opacity: 0.2;
+    transform: translateZ(0) scale3d(0.7, 0.7, 1);
+  }
+  33% { 
+    opacity: 0.9;
+    transform: translateZ(0) scale3d(1.3, 1.3, 1);
+  }
+  66% { 
+    opacity: 0.4;
+    transform: translateZ(0) scale3d(1.1, 1.1, 1);
+  }
+}
+
+@keyframes twinkle-variant-2 {
+  0%, 100% { 
+    opacity: 0.4;
+    transform: translateZ(0) scale3d(0.9, 0.9, 1) rotate(0deg);
+  }
+  25% { 
+    opacity: 0.1;
+    transform: translateZ(0) scale3d(0.6, 0.6, 1) rotate(90deg);
+  }
+  75% { 
+    opacity: 1;
+    transform: translateZ(0) scale3d(1.4, 1.4, 1) rotate(180deg);
+  }
+}
+
+/* Matrix-style text effect - GPU Optimized */
+.matrix-text {
+  font-family: 'Courier New', monospace;
+  color: #00ff88;
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+  animation: matrix-flicker 0.1s infinite;
+  will-change: opacity;
+  transform: translateZ(0);
+}
+
+@keyframes matrix-flicker {
+  0%, 98% { opacity: 1; transform: translateZ(0); }
+  99% { opacity: 0.8; transform: translateZ(0); }
+  100% { opacity: 1; transform: translateZ(0); }
+}
+
+/* Asteroids - Moving Space Debris */
+.asteroid {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+  background: linear-gradient(135deg, 
+    rgba(100, 100, 100, 0.8) 0%,
+    rgba(60, 60, 60, 0.9) 30%, 
+    rgba(40, 40, 40, 0.7) 60%,
+    rgba(80, 80, 80, 0.8) 100%
+  );
+  box-shadow: 
+    inset -2px -2px 4px rgba(0, 0, 0, 0.5),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.1),
+    0 0 8px rgba(100, 100, 100, 0.3);
+  position: absolute;
+  animation: asteroidMove linear infinite;
+}
+
+.asteroid::before {
+  content: '';
+  position: absolute;
+  top: 20%;
+  left: 30%;
+  width: 15%;
+  height: 15%;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 50%;
+  box-shadow: 
+    15px 10px 0 -2px rgba(0, 0, 0, 0.3),
+    -5px 20px 0 -3px rgba(0, 0, 0, 0.2);
+}
+
+.asteroid::after {
+  content: '';
+  position: absolute;
+  top: 60%;
+  right: 25%;
+  width: 12%;
+  height: 12%;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+}
+
+/* Asteroid Movement Patterns */
+@keyframes asteroidMove {
+  0% {
+    transform: translate3d(-50px, 20vh, 0) rotate(0deg) scale(1);
+    opacity: 0;
+  }
+  5% {
+    opacity: 0.6;
+  }
+  10% {
+    opacity: 0.8;
+    transform: translate3d(0px, 20vh, 0) rotate(30deg) scale(1.1);
+  }
+  90% {
+    opacity: 0.8;
+    transform: translate3d(calc(100vw - 50px), 20vh, 0) rotate(330deg) scale(1.1);
+  }
+  95% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate3d(calc(100vw + 50px), 20vh, 0) rotate(360deg) scale(1);
+    opacity: 0;
+  }
+}
+
+.asteroid:nth-child(2n) {
+  animation-name: asteroidMove-diagonal;
+  border-radius: 40% 60% 60% 40% / 60% 40% 60% 40%;
+}
+
+.asteroid:nth-child(3n) {
+  animation-name: asteroidMove-reverse;
+  border-radius: 20% 80% 80% 20% / 20% 20% 80% 80%;
+  background: linear-gradient(45deg, 
+    rgba(80, 120, 100, 0.7) 0%,
+    rgba(60, 80, 70, 0.8) 40%, 
+    rgba(40, 60, 50, 0.6) 80%,
+    rgba(70, 100, 80, 0.7) 100%
+  );
+}
+
+@keyframes asteroidMove-diagonal {
+  0% {
+    transform: translate3d(-60px, -20px, 0) rotate(0deg) scale(0.8);
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.7;
+  }
+  15% {
+    opacity: 0.9;
+    transform: translate3d(10px, 10px, 0) rotate(45deg) scale(1);
+  }
+  85% {
+    opacity: 0.9;
+    transform: translate3d(calc(100vw - 60px), calc(50vh + 30px), 0) rotate(315deg) scale(1);
+  }
+  100% {
+    transform: translate3d(calc(100vw + 60px), calc(50vh + 60px), 0) rotate(360deg) scale(0.8);
+    opacity: 0;
+  }
+}
+
+@keyframes asteroidMove-reverse {
+  0% {
+    transform: translate3d(calc(100vw + 40px), 70vh, 0) rotate(0deg) scale(1.2);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+    transform: translate3d(calc(100vw - 10px), 70vh, 0) rotate(-30deg) scale(1);
+  }
+  90% {
+    opacity: 0.8;
+    transform: translate3d(40px, 70vh, 0) rotate(-330deg) scale(1);
+  }
+  100% {
+    transform: translate3d(-40px, 70vh, 0) rotate(-360deg) scale(1.2);
+    opacity: 0;
+  }
+}
+
+/* Large Asteroid Variant */
+.asteroid-large {
+  animation-name: asteroidMove-slow;
+  animation-duration: 25s !important;
+  border-radius: 35% 65% 70% 30% / 40% 50% 60% 40%;
+  background: linear-gradient(225deg, 
+    rgba(120, 100, 80, 0.9) 0%,
+    rgba(80, 60, 50, 0.8) 30%, 
+    rgba(60, 40, 30, 0.7) 60%,
+    rgba(100, 80, 60, 0.8) 100%
+  );
+  box-shadow: 
+    inset -3px -3px 6px rgba(0, 0, 0, 0.6),
+    inset 3px 3px 6px rgba(255, 255, 255, 0.15),
+    0 0 15px rgba(120, 100, 80, 0.4);
+}
+
+@keyframes asteroidMove-slow {
+  0% {
+    transform: translate3d(-80px, 40vh, 0) rotate(0deg) scale(0.9);
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.9;
+    transform: translate3d(-20px, 40vh, 0) rotate(20deg) scale(1.1);
+  }
+  92% {
+    opacity: 0.9;
+    transform: translate3d(calc(100vw + 20px), 40vh, 0) rotate(340deg) scale(1.1);
+  }
+  100% {
+    transform: translate3d(calc(100vw + 80px), 40vh, 0) rotate(360deg) scale(0.9);
+    opacity: 0;
+  }
+}

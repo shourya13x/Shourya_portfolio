@@ -31,8 +31,8 @@ close    # Close the robot viewer
 
 ## Technical Details
 
-- **Spline Viewer**: Uses `@splinetool/viewer@1.10.39`
-- **3D Model URL**: `https://prod.spline.design/piGKhdki-YX8uQ-t/scene.splinecode`
+- **Spline Viewer**: Uses `@splinetool/viewer@1.10.46`
+- **3D Model URL**: `https://prod.spline.design/2rhrNY7qRSlHHwWL/scene.splinecode`
 - **Loading**: Dynamic script loading with cleanup on unmount
 - **Styling**: Custom CSS with portfolio theme colors
 

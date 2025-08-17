@@ -10,28 +10,45 @@
   body {
     @apply bg-dark-300 text-white font-sans;
     font-feature-settings: "rlig" 1, "calt" 1;
-    cursor: auto; /* Ensure cursor is always visible */
+    cursor: auto;
+    overflow-x: hidden !important; /* Prevent horizontal scrolling globally */
+    overscroll-behavior-x: none; /* Prevent bounce scroll on iOS */
   }
   
-  /* Ensure cursor is visible on all interactive elements */
   button, a, input, textarea, select, [role="button"] {
     cursor: pointer;
   }
-  
-  /* Temporarily disable global smooth scroll to prevent conflicts */
-  /* html {
-    scroll-behavior: smooth;
-  } */
 }
 
 @layer components {
-  /* Glassmorphism effect */
+  /* Enhanced Glassmorphism effects */
   .glass {
-    @apply backdrop-blur-md bg-white/5 border border-white/10;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 
+      0 4px 16px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
   
   .glass-strong {
-    @apply backdrop-blur-lg bg-white/10 border border-white/20;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(255, 255, 255, 0.05),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+  
+  .glass-accent {
+    background: rgba(16, 185, 129, 0.15);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    box-shadow: 
+      0 0 24px rgba(16, 185, 129, 0.25),
+      0 4px 16px rgba(16, 185, 129, 0.15),
+      inset 0 1px 0 rgba(16, 185, 129, 0.2);
   }
   
   /* Terminal styles */
@@ -54,7 +71,6 @@
     -moz-osx-font-smoothing: grayscale;
   }
   
-  /* Enhanced terminal text for better readability */
   .terminal-text-enhanced {
     @apply text-primary font-mono font-medium;
     text-shadow: 0 0 8px currentColor;
@@ -112,6 +128,20 @@
 }
 
 @layer utilities {
+  /* Mobile touch and scroll fixes */
+  .prevent-horizontal-scroll {
+    overflow-x: hidden !important;
+    overscroll-behavior-x: none;
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .mobile-safe {
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
+    touch-action: manipulation;
+  }
+  
   /* Scrollbar styles */
   .scrollbar-thin {
     scrollbar-width: thin;
@@ -158,49 +188,20 @@
     text-shadow: 
       0 0 8px currentColor,
       0 0 16px currentColor,
-      0 0 24px currentColor,
-      0 0 32px currentColor;
+      0 0 24px currentColor;
     filter: contrast(1.2) brightness(1.1);
-  }
-  
-  /* Enhanced glow effect for large text */
-  .text-shadow-glow-large {
-    text-shadow: 
-      0 0 12px currentColor,
-      0 0 24px currentColor,
-      0 0 36px currentColor,
-      0 0 48px currentColor,
-      0 0 60px currentColor;
-    filter: contrast(1.3) brightness(1.2);
   }
   
   /* Drop shadow glow effect for icons */
   .drop-shadow-glow {
     filter: drop-shadow(0 0 8px rgba(0, 255, 136, 0.6)) 
-            drop-shadow(0 0 16px rgba(0, 255, 136, 0.4))
-            drop-shadow(0 0 24px rgba(0, 255, 136, 0.2));
+            drop-shadow(0 0 16px rgba(0, 255, 136, 0.4));
   }
   
   /* Focus styles */
   .focus-visible {
     @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-dark-300;
   }
-}
-
-/* Custom animations */
-@keyframes matrix-rain {
-  0% {
-    transform: translateY(-100vh);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(100vh);
-    opacity: 0;
-  }
-}
-
-.matrix-rain {
-  animation: matrix-rain 10s linear infinite;
 }
 
 /* Loading spinner */
@@ -230,20 +231,18 @@
   color: #00ff88;
 }
 
-/* Gradient animations */
-@keyframes gradient {
-  0% {
-    background-position: 0% 50%;
+/* Bounce animation for skill balls */
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translateY(0) scale(1);
   }
-  50% {
-    background-position: 100% 50%;
+  40%, 43% {
+    transform: translateY(-20px) scale(1.05);
   }
-  100% {
-    background-position: 0% 50%;
+  70% {
+    transform: translateY(-10px) scale(1.02);
+  }
+  90% {
+    transform: translateY(-4px) scale(1.01);
   }
 }
-
-.gradient-animate {
-  background-size: 200% 200%;
-  animation: gradient 3s ease infinite;
-    }

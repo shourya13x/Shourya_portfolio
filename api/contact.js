@@ -1,4 +1,4 @@
-const nodemailer = require('nodemailer');
+import nodemailer from 'nodemailer';
 
 export default async function handler(req, res) {
   // Handle CORS
@@ -41,7 +41,7 @@ export default async function handler(req, res) {
     }
 
     // Create transporter
-    const transporter = nodemailer.createTransporter({
+    const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
         user: process.env.EMAIL_USER,
@@ -89,7 +89,6 @@ This message was sent from your portfolio contact form at ${new Date().toISOStri
 
   } catch (error) {
     console.error('Contact form error:', error);
-    
     return res.status(500).json({ 
       success: false, 
       message: 'Failed to send message. Please try again or contact me directly.' 

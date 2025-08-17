@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useCallback, useRef } from 'react';
+import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import { 
   Code, 
   Database, 
@@ -13,9 +13,10 @@ import {
 import { useVisibility } from '@/hooks';
 import { cn, downloadResume } from '@/utils';
 import profileImage from '@/assets/images/profile.jpg';
-import FallingBinary from '@/components/FallingBinary/FallingBinary';
-import SplineViewer from '@/components/SplineViewer';
+
+
 import TouchCard from '@/components/TouchCard';
+import '@/components/FuturisticEffects/FuturisticEffects.css';
 
 interface ServiceItem {
   id: string;
@@ -29,6 +30,27 @@ interface ServiceItem {
 const About: React.FC = () => {
   const { isVisible, elementRef } = useVisibility(0.1); // Reduced threshold for earlier triggering
   const [hoveredService, setHoveredService] = useState<string | null>(null);
+  const [hoveredStat, setHoveredStat] = useState<string | null>(null);
+  
+  const profileRef = useRef<HTMLDivElement>(null);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  
+  // Transform mouse position to rotation values
+  const rotateX = useTransform(mouseY, [-300, 300], [15, -15]);
+  const rotateY = useTransform(mouseX, [-300, 300], [-15, 15]);
+  
+  // Handle mouse movement for magnetic effects
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (profileRef.current) {
+      const rect = profileRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      
+      mouseX.set(x);
+      mouseY.set(y);
+    }
+  }, [mouseX, mouseY]);
   
   const stats = [
     { label: " Days Streak", value: "300+", icon: Code },
@@ -135,8 +157,8 @@ const About: React.FC = () => {
   
   return (
     <section id="about" ref={elementRef} className="py-20 lg:py-32 relative">
-      {/* Background Gradient - Always visible */}
-      <div className="absolute inset-0 bg-gradient-to-br from-dark-300 via-dark-200 to-dark-300" />
+      {/* Ultra-Subtle Background Overlay - Minimal interference with space effects */}
+      <div className="absolute inset-0 bg-gradient-to-br from-dark-300/5 via-dark-200/3 to-dark-300/5" />
       
       {/* Animated Background Elements - Always visible */}
       <div className="absolute inset-0 overflow-hidden">
@@ -156,7 +178,7 @@ const About: React.FC = () => {
           <motion.div variants={itemVariants} className="text-center">
             <h2 className="text-3xl lg:text-5xl font-bold mb-6">
               <span className="text-primary">01.</span>{' '}
-              <span className="text-white">About Me</span>
+              <span className="holographic-text" data-text="About Me">About Me</span>
             </h2>
             <p className="text-lg text-white/80 max-w-3xl mx-auto">
               I'm a future-focused software engineer passionate about crafting meaningful digital experiences. 
@@ -165,56 +187,289 @@ const About: React.FC = () => {
             </p>
           </motion.div>
           
-          {/* Stats Grid */}
+          {/* Enhanced Stats Grid */}
           <motion.div
             variants={itemVariants}
             className="grid grid-cols-2 lg:grid-cols-4 gap-6"
           >
             {stats.map((stat) => (
-              <TouchCard
+              <div
                 key={stat.label}
-                className="card text-center group"
-                intensity={0.5}
-                glowColor="#00FF88"
+                onMouseEnter={() => setHoveredStat(stat.label)}
+                onMouseLeave={() => setHoveredStat(null)}
               >
-                <div className="flex justify-center mb-4">
-                  <div className="p-3 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-black transition-all duration-300">
-                    <stat.icon size={24} />
-                  </div>
-                </div>
-                <div className="text-2xl lg:text-3xl font-bold text-primary mb-2">
+                <TouchCard
+                  className="holo-card card text-center group relative overflow-hidden"
+                  intensity={0.5}
+                  glowColor="#00FF88"
+                >
+                {/* Animated background particles */}
+                {hoveredStat === stat.label && (
+                  <>
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <motion.div
+                        key={i}
+                        className="absolute w-1 h-1 bg-primary/60 rounded-full"
+                        style={{
+                          left: `${Math.random() * 100}%`,
+                          top: `${Math.random() * 100}%`,
+                        }}
+                        animate={{
+                          scale: [0, 1.5, 0],
+                          opacity: [0, 1, 0],
+                          rotate: [0, 180, 360],
+                        }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          delay: i * 0.2,
+                          ease: "easeInOut",
+                        }}
+                      />
+                    ))}
+                  </>
+                )}
+                
+                {/* Magnetic icon */}
+                <motion.div 
+                  className="flex justify-center mb-4"
+                  whileHover={{ scale: 1.2, rotate: 10 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <motion.div 
+                    className="p-3 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-black transition-all duration-500 relative overflow-hidden"
+                    animate={hoveredStat === stat.label ? {
+                      boxShadow: [
+                        '0 0 10px rgba(0, 255, 136, 0.3)',
+                        '0 0 25px rgba(0, 255, 136, 0.6)',
+                        '0 0 10px rgba(0, 255, 136, 0.3)'
+                      ],
+                      scale: [1, 1.05, 1],
+                    } : {
+                      boxShadow: '0 0 5px rgba(0, 255, 136, 0.1)',
+                      scale: 1,
+                    }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: hoveredStat === stat.label ? Infinity : 0,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    {/* Ripple effect */}
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-primary/20 to-transparent rounded-lg"
+                      animate={hoveredStat === stat.label ? {
+                        scale: [0, 2],
+                        opacity: [0.5, 0],
+                      } : { scale: 0, opacity: 0 }}
+                      transition={{ duration: 0.6, ease: "easeOut" }}
+                    />
+                    
+                    <motion.div
+                      animate={hoveredStat === stat.label ? {
+                        rotate: [0, 15, -15, 0],
+                        scale: [1, 1.1, 1],
+                      } : { rotate: 0, scale: 1 }}
+                      transition={{
+                        duration: 0.8,
+                        ease: "easeInOut",
+                      }}
+                    >
+                      <stat.icon size={24} />
+                    </motion.div>
+                  </motion.div>
+                </motion.div>
+                
+                {/* Animated counter */}
+                <motion.div 
+                  className="text-2xl lg:text-3xl font-bold text-primary mb-2"
+                  animate={hoveredStat === stat.label ? {
+                    scale: [1, 1.1, 1],
+                    textShadow: [
+                      '0 0 5px rgba(0, 255, 136, 0.3)',
+                      '0 0 15px rgba(0, 255, 136, 0.6)',
+                      '0 0 5px rgba(0, 255, 136, 0.3)'
+                    ],
+                  } : {
+                    scale: 1,
+                    textShadow: '0 0 0px transparent',
+                  }}
+                  transition={{
+                    duration: 1,
+                    repeat: hoveredStat === stat.label ? Infinity : 0,
+                    ease: "easeInOut",
+                  }}
+                >
                   {stat.value}
-                </div>
-                <div className="text-sm text-white/70">
+                </motion.div>
+                
+                {/* Enhanced label with typing effect */}
+                <motion.div 
+                  className="text-sm text-white/70"
+                  animate={hoveredStat === stat.label ? {
+                    color: 'rgba(255, 255, 255, 0.9)',
+                  } : {
+                    color: 'rgba(255, 255, 255, 0.7)',
+                  }}
+                  transition={{ duration: 0.3 }}
+                >
                   {stat.label}
-                </div>
-              </TouchCard>
+                </motion.div>
+                
+                {/* Hover glow effect */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-radial from-primary/10 to-transparent opacity-0"
+                  animate={hoveredStat === stat.label ? {
+                    opacity: [0, 0.5, 0],
+                    scale: [0.8, 1.2, 0.8],
+                  } : { opacity: 0, scale: 0.8 }}
+                  transition={{
+                    duration: 2,
+                    repeat: hoveredStat === stat.label ? Infinity : 0,
+                    ease: "easeInOut",
+                  }}
+                />
+                </TouchCard>
+              </div>
             ))}
           </motion.div>
           
-          {/* Bio Section */}
+          {/* Enhanced Bio Section */}
           <motion.div
             variants={itemVariants}
             className="grid lg:grid-cols-2 gap-12 items-center"
+            onMouseMove={handleMouseMove}
           >
-            {/* Profile Image */}
-            <div className="relative group">
-              <div className="relative overflow-hidden rounded-2xl">
+            {/* Enhanced Profile Image with 3D Tilt */}
+            <motion.div 
+              ref={profileRef}
+              className="relative group perspective-1000"
+              style={{
+                rotateX,
+                rotateY,
+                transformStyle: "preserve-3d",
+              }}
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            >
+              {/* Main image container */}
+              <motion.div 
+                className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/5 to-secondary/5 backdrop-blur-sm border border-white/10"
+                whileHover={{ 
+                  boxShadow: "0 25px 50px rgba(0, 255, 136, 0.2)",
+                  borderColor: "rgba(0, 255, 136, 0.3)",
+                }}
+                transition={{ duration: 0.3 }}
+              >
                 {/* Profile image */}
-                <img 
+                <motion.img 
                   src={profileImage} 
                   alt="Profile" 
                   className="w-full h-full object-cover aspect-square scale-150"
+                  whileHover={{ 
+                    scale: 1.6,
+                    filter: "brightness(1.1) contrast(1.1)",
+                  }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
                 />
                 
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </div>
+                {/* Interactive overlay */}
+                <motion.div 
+                  className="absolute inset-0 bg-gradient-to-tr from-primary/10 via-transparent to-secondary/10"
+                  initial={{ opacity: 0 }}
+                  whileHover={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                />
+                
+                {/* Scanning line effect */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/30 to-transparent"
+                  style={{
+                    width: '2px',
+                    background: 'linear-gradient(90deg, transparent, rgba(0,255,136,0.8), transparent)',
+                  }}
+                  animate={{
+                    x: [-50, 450],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    repeatDelay: 2,
+                  }}
+                />
+              </motion.div>
               
-              {/* Decorative Elements */}
-              <div className="absolute -top-4 -right-4 w-24 h-24 border-2 border-primary/30 rounded-2xl -z-10 group-hover:border-primary/60 transition-colors duration-300" />
-              <div className="absolute -bottom-4 -left-4 w-24 h-24 border-2 border-secondary/30 rounded-2xl -z-10 group-hover:border-secondary/60 transition-colors duration-300" />
-            </div>
+              {/* Floating particles around image */}
+              {Array.from({ length: 8 }).map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute w-2 h-2 bg-primary/60 rounded-full"
+                  style={{
+                    left: `${10 + Math.random() * 80}%`,
+                    top: `${10 + Math.random() * 80}%`,
+                  }}
+                  animate={{
+                    y: [0, -20 - Math.random() * 20, 0],
+                    x: [0, (Math.random() - 0.5) * 40, 0],
+                    opacity: [0.3, 1, 0.3],
+                    scale: [0.5, 1.2, 0.5],
+                  }}
+                  transition={{
+                    duration: 3 + Math.random() * 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: i * 0.3,
+                  }}
+                />
+              ))}
+              
+              {/* Enhanced Decorative Elements */}
+              <motion.div 
+                className="absolute -top-6 -right-6 w-32 h-32 border-2 border-primary/20 rounded-2xl -z-10"
+                animate={{
+                  rotate: [0, 90, 180, 270, 360],
+                  borderColor: ['rgba(0, 255, 136, 0.2)', 'rgba(0, 255, 136, 0.6)', 'rgba(0, 255, 136, 0.2)'],
+                }}
+                transition={{
+                  rotate: { duration: 20, repeat: Infinity, ease: "linear" },
+                  borderColor: { duration: 4, repeat: Infinity, ease: "easeInOut" },
+                }}
+                whileHover={{ 
+                  scale: 1.1,
+                  borderColor: 'rgba(0, 255, 136, 0.8)',
+                }}
+              />
+              
+              <motion.div 
+                className="absolute -bottom-6 -left-6 w-28 h-28 border-2 border-secondary/20 rounded-2xl -z-10"
+                animate={{
+                  rotate: [360, 270, 180, 90, 0],
+                  borderColor: ['rgba(0, 153, 255, 0.2)', 'rgba(0, 153, 255, 0.6)', 'rgba(0, 153, 255, 0.2)'],
+                }}
+                transition={{
+                  rotate: { duration: 15, repeat: Infinity, ease: "linear" },
+                  borderColor: { duration: 3.5, repeat: Infinity, ease: "easeInOut" },
+                }}
+                whileHover={{ 
+                  scale: 1.1,
+                  borderColor: 'rgba(0, 153, 255, 0.8)',
+                }}
+              />
+              
+              {/* Glow effect on hover */}
+              <motion.div
+                className="absolute inset-0 rounded-2xl opacity-0"
+                style={{
+                  background: 'radial-gradient(circle at center, rgba(0, 255, 136, 0.1) 0%, transparent 70%)',
+                }}
+                whileHover={{ 
+                  opacity: 1,
+                  scale: 1.1,
+                }}
+                transition={{ duration: 0.3 }}
+              />
+            </motion.div>
             
             {/* Bio Text */}
             <div className="space-y-6">
@@ -245,12 +500,71 @@ const About: React.FC = () => {
               </div>
               
               <motion.button
-                className="btn-primary"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                className="btn-primary relative overflow-hidden group"
+                whileHover={{ 
+                  scale: 1.08,
+                  y: -2,
+                  boxShadow: "0 10px 30px rgba(0, 255, 136, 0.3)",
+                  transition: { duration: 0.2, type: "spring", stiffness: 300 }
+                }}
+                whileTap={{ 
+                  scale: 0.95,
+                  y: 1,
+                  transition: { duration: 0.1 }
+                }}
                 onClick={downloadResume}
               >
-                Download Resume
+                {/* Animated background gradient */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-primary via-secondary to-primary"
+                  style={{
+                    backgroundSize: '200% 100%',
+                  }}
+                  animate={{
+                    backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "linear"
+                  }}
+                />
+                
+                {/* Ripple effect on click */}
+                <motion.div
+                  className="absolute inset-0 bg-white/20 rounded-lg"
+                  initial={{ scale: 0, opacity: 0 }}
+                  whileTap={{
+                    scale: [0, 1.2],
+                    opacity: [0.5, 0],
+                  }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                />
+                
+                {/* Glowing particles */}
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="absolute w-1 h-1 bg-white/80 rounded-full"
+                    style={{
+                      left: `${20 + i * 20}%`,
+                      top: '50%',
+                    }}
+                    animate={{
+                      y: [0, -10, 0],
+                      opacity: [0.3, 1, 0.3],
+                      scale: [0.5, 1.5, 0.5],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                      delay: i * 0.2,
+                    }}
+                  />
+                ))}
+                
+                <span className="relative z-10 font-semibold">Download Resume</span>
               </motion.button>
             </div>
           </motion.div>
@@ -261,8 +575,8 @@ const About: React.FC = () => {
             className="relative"
           >
             <div className="text-center mb-12">
-              <h2 className="text-4xl lg:text-6xl font-bold mb-6">
-                <span className="glow-text">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold mb-6 whitespace-nowrap">
+                <span className="glitch-text matrix-text" data-text="WHAT I DO">
                   WHAT I DO
                 </span>
               </h2>
@@ -271,44 +585,19 @@ const About: React.FC = () => {
               </p>
             </div>
             
-            {/* Binary Rain Background for What I Do Section */}
-            <div className="absolute inset-0 -z-10">
-              <FallingBinary 
-                enabled={isVisible} // Only enable when visible
-                density={20}
-                speed={1.8}
-                className="opacity-70"
-              />
-            </div>
+
             
-            {/* Two Column Layout: Spline Viewer + Services */}
-            <div className="grid lg:grid-cols-2 gap-12 items-start relative z-10">
-              {/* Left Column: Spline Viewer */}
-              <motion.div
-                variants={itemVariants}
-                className="sticky top-8"
-              >
-                <SplineViewer 
-                  url="https://prod.spline.design/NkUYJVsk4kjKRPJ3/scene.splinecode"
-                  className="rounded-2xl overflow-hidden shadow-2xl shadow-primary/20"
-                  style={{
-                    height: '500px',
-                    minHeight: '500px'
-                  }}
-                />
-              </motion.div>
-              
-              {/* Right Column: Services Stack */}
-              <motion.div
-                variants={itemVariants}
-                className="flex flex-col space-y-4"
-              >
+            {/* Services Section - Centered */}
+            <motion.div
+              variants={itemVariants}
+              className="flex flex-col items-center space-y-6 max-w-4xl mx-auto"
+            >
             {services.map((service, index) => (
               <motion.div
                 key={service.id}
                 variants={itemVariants}
                 custom={index}
-                className="group relative w-full max-w-md"
+                className="group relative w-full max-w-2xl mx-auto"
                 onHoverStart={() => setHoveredService(service.id)}
                 onHoverEnd={() => setHoveredService(null)}
                 layout
@@ -322,18 +611,18 @@ const About: React.FC = () => {
                 {/* Service Card */}
                 <motion.div
                   className={cn(
-                    "relative p-6 rounded-2xl border border-white/10 backdrop-blur-sm",
-                    "hover:border-white/20 hover:bg-white/3 transition-all duration-300",
+                    "relative p-6 rounded-2xl border border-white/10",
+                    "hover:border-white/20 hover:bg-white/1 transition-all duration-300",
                     "shadow-lg hover:shadow-primary/10",
-                    hoveredService === service.id ? "border-primary/30 bg-primary/5" : "bg-white/2"
+                    hoveredService === service.id ? "border-primary/30 bg-primary/2" : "bg-transparent"
                   )}
                   style={{
-                    background: `linear-gradient(135deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.01) 100%)`,
+                    background: `linear-gradient(135deg, rgba(255,255,255,0.005) 0%, rgba(255,255,255,0.001) 100%)`,
                   }}
                   layout
                 >
                   {/* Subtle Gradient Border Effect */}
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/20 to-secondary/20 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/10 to-secondary/10 opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
                   
                   {/* Content */}
                   <div className="relative z-10 flex items-center space-x-4">
@@ -410,7 +699,7 @@ const About: React.FC = () => {
                   </div>
                   
                   {/* Subtle Hover Glow Effect */}
-                  <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-300 bg-gradient-radial from-primary/15 to-transparent" />
+                  <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity duration-300 bg-gradient-radial from-primary/8 to-transparent" />
                 </motion.div>
                 
                 {/* Connecting Line (except for last item) */}
@@ -423,10 +712,9 @@ const About: React.FC = () => {
                     layout
                   />
                 )}
-              </motion.div>
+                            </motion.div>
             ))}
-              </motion.div>
-            </div>
+          </motion.div>
           </motion.div>
           
 
