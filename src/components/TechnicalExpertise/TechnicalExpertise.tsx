@@ -556,6 +556,8 @@ const TechnicalExpertise: React.FC = () => {
                       variants={ballVariants}
                       initial="hidden"
                       animate="visible"
+                      onMouseEnter={() => setSelectedSkill(skill)}
+                      onFocus={() => setSelectedSkill(skill)}
                       whileHover={{ 
                         scale: 1.15,
                         y: -10,

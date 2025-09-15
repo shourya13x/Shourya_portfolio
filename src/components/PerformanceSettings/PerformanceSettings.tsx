@@ -5,7 +5,6 @@ import { cn } from '@/utils';
 
 interface PerformanceSettings {
   enableAnimations: boolean;
-  enableMouseTrail: boolean;
   enableFallingBinary: boolean;
   enableHeavyEffects: boolean;
   performanceMode: 'auto' | 'high' | 'balanced' | 'performance';
@@ -16,7 +15,6 @@ const PerformanceSettings: React.FC = () => {
   
   const defaultSettings: PerformanceSettings = {
     enableAnimations: true,
-    enableMouseTrail: true,
     enableFallingBinary: true,
     enableHeavyEffects: true,
     performanceMode: 'auto'
@@ -42,28 +40,24 @@ const PerformanceSettings: React.FC = () => {
     const presetSettings = {
       auto: {
         enableAnimations: true,
-        enableMouseTrail: !deviceInfo.isMobile,
         enableFallingBinary: !deviceInfo.isMobile,
         enableHeavyEffects: deviceInfo.cores >= 4,
         performanceMode: 'auto' as const
       },
       high: {
         enableAnimations: true,
-        enableMouseTrail: true,
         enableFallingBinary: true,
         enableHeavyEffects: true,
         performanceMode: 'high' as const
       },
       balanced: {
         enableAnimations: true,
-        enableMouseTrail: true,
         enableFallingBinary: false,
         enableHeavyEffects: false,
         performanceMode: 'balanced' as const
       },
       performance: {
         enableAnimations: false,
-        enableMouseTrail: false,
         enableFallingBinary: false,
         enableHeavyEffects: false,
         performanceMode: 'performance' as const
@@ -160,7 +154,6 @@ const PerformanceSettings: React.FC = () => {
               
               {Object.entries({
                 enableAnimations: 'Animations',
-                enableMouseTrail: 'Mouse Trail',
                 enableFallingBinary: 'Falling Binary',
                 enableHeavyEffects: 'Heavy Effects'
               }).map(([key, label]) => (

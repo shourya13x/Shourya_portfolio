@@ -372,6 +372,12 @@
   transform: translateZ(0);
 }
 
+/* Disable rotating shine for elements that opt out */
+.holo-card.no-shine::before {
+  animation: none;
+  display: none;
+}
+
 @keyframes holo-shine {
   0% { transform: translateZ(0) rotate(0deg); }
   100% { transform: translateZ(0) rotate(360deg); }

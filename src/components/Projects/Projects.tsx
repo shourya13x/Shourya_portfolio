@@ -245,9 +245,9 @@ const Projects: React.FC = () => {
       <div
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className="relative"
+        className="relative h-full"
       >
-        <TouchCard className="holo-card group" intensity={0.4} glowColor="#0099ff">
+        <TouchCard className="holo-card no-shine group" intensity={0.4} glowColor="#0099ff">
           <motion.div 
             className="relative p-6 rounded-2xl border border-white/10 bg-transparent hover:border-white/20 transition-all duration-500 h-full flex flex-col overflow-hidden"
             whileHover={{ 
@@ -708,7 +708,7 @@ const Projects: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3 }}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-stretch"
               >
                 {filteredProjects.map((project) => (
                   <ProjectCard

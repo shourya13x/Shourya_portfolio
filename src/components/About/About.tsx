@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useRef } from 'react';
-import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Code, 
   Database, 
@@ -32,25 +32,7 @@ const About: React.FC = () => {
   const [hoveredService, setHoveredService] = useState<string | null>(null);
   const [hoveredStat, setHoveredStat] = useState<string | null>(null);
   
-  const profileRef = useRef<HTMLDivElement>(null);
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
   
-  // Transform mouse position to rotation values
-  const rotateX = useTransform(mouseY, [-300, 300], [15, -15]);
-  const rotateY = useTransform(mouseX, [-300, 300], [-15, 15]);
-  
-  // Handle mouse movement for magnetic effects
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (profileRef.current) {
-      const rect = profileRef.current.getBoundingClientRect();
-      const x = e.clientX - rect.left - rect.width / 2;
-      const y = e.clientY - rect.top - rect.height / 2;
-      
-      mouseX.set(x);
-      mouseY.set(y);
-    }
-  }, [mouseX, mouseY]);
   
   const stats = [
     { label: " Days Streak", value: "300+", icon: Code },
@@ -199,7 +181,7 @@ const About: React.FC = () => {
                 onMouseLeave={() => setHoveredStat(null)}
               >
                 <TouchCard
-                  className="holo-card card text-center group relative overflow-hidden"
+                  className="holo-card no-shine card text-center group relative overflow-hidden"
                   intensity={0.5}
                   glowColor="#00FF88"
                 >
@@ -338,138 +320,17 @@ const About: React.FC = () => {
           <motion.div
             variants={itemVariants}
             className="grid lg:grid-cols-2 gap-12 items-center"
-            onMouseMove={handleMouseMove}
           >
-            {/* Enhanced Profile Image with 3D Tilt */}
-            <motion.div 
-              ref={profileRef}
-              className="relative group perspective-1000"
-              style={{
-                rotateX,
-                rotateY,
-                transformStyle: "preserve-3d",
-              }}
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            >
-              {/* Main image container */}
-              <motion.div 
-                className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/5 to-secondary/5 backdrop-blur-sm border border-white/10"
-                whileHover={{ 
-                  boxShadow: "0 25px 50px rgba(0, 255, 136, 0.2)",
-                  borderColor: "rgba(0, 255, 136, 0.3)",
-                }}
-                transition={{ duration: 0.3 }}
-              >
-                {/* Profile image */}
-                <motion.img 
+            {/* Static Profile Image - interactivity removed */}
+            <div className="relative">
+              <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/5 to-secondary/5 backdrop-blur-sm border border-white/10">
+                <img 
                   src={profileImage} 
                   alt="Profile" 
                   className="w-full h-full object-cover aspect-square scale-150"
-                  whileHover={{ 
-                    scale: 1.6,
-                    filter: "brightness(1.1) contrast(1.1)",
-                  }}
-                  transition={{ duration: 0.4, ease: "easeOut" }}
                 />
-                
-                {/* Interactive overlay */}
-                <motion.div 
-                  className="absolute inset-0 bg-gradient-to-tr from-primary/10 via-transparent to-secondary/10"
-                  initial={{ opacity: 0 }}
-                  whileHover={{ opacity: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-                
-                {/* Scanning line effect */}
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/30 to-transparent"
-                  style={{
-                    width: '2px',
-                    background: 'linear-gradient(90deg, transparent, rgba(0,255,136,0.8), transparent)',
-                  }}
-                  animate={{
-                    x: [-50, 450],
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    repeatDelay: 2,
-                  }}
-                />
-              </motion.div>
-              
-              {/* Floating particles around image */}
-              {Array.from({ length: 8 }).map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute w-2 h-2 bg-primary/60 rounded-full"
-                  style={{
-                    left: `${10 + Math.random() * 80}%`,
-                    top: `${10 + Math.random() * 80}%`,
-                  }}
-                  animate={{
-                    y: [0, -20 - Math.random() * 20, 0],
-                    x: [0, (Math.random() - 0.5) * 40, 0],
-                    opacity: [0.3, 1, 0.3],
-                    scale: [0.5, 1.2, 0.5],
-                  }}
-                  transition={{
-                    duration: 3 + Math.random() * 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: i * 0.3,
-                  }}
-                />
-              ))}
-              
-              {/* Enhanced Decorative Elements */}
-              <motion.div 
-                className="absolute -top-6 -right-6 w-32 h-32 border-2 border-primary/20 rounded-2xl -z-10"
-                animate={{
-                  rotate: [0, 90, 180, 270, 360],
-                  borderColor: ['rgba(0, 255, 136, 0.2)', 'rgba(0, 255, 136, 0.6)', 'rgba(0, 255, 136, 0.2)'],
-                }}
-                transition={{
-                  rotate: { duration: 20, repeat: Infinity, ease: "linear" },
-                  borderColor: { duration: 4, repeat: Infinity, ease: "easeInOut" },
-                }}
-                whileHover={{ 
-                  scale: 1.1,
-                  borderColor: 'rgba(0, 255, 136, 0.8)',
-                }}
-              />
-              
-              <motion.div 
-                className="absolute -bottom-6 -left-6 w-28 h-28 border-2 border-secondary/20 rounded-2xl -z-10"
-                animate={{
-                  rotate: [360, 270, 180, 90, 0],
-                  borderColor: ['rgba(0, 153, 255, 0.2)', 'rgba(0, 153, 255, 0.6)', 'rgba(0, 153, 255, 0.2)'],
-                }}
-                transition={{
-                  rotate: { duration: 15, repeat: Infinity, ease: "linear" },
-                  borderColor: { duration: 3.5, repeat: Infinity, ease: "easeInOut" },
-                }}
-                whileHover={{ 
-                  scale: 1.1,
-                  borderColor: 'rgba(0, 153, 255, 0.8)',
-                }}
-              />
-              
-              {/* Glow effect on hover */}
-              <motion.div
-                className="absolute inset-0 rounded-2xl opacity-0"
-                style={{
-                  background: 'radial-gradient(circle at center, rgba(0, 255, 136, 0.1) 0%, transparent 70%)',
-                }}
-                whileHover={{ 
-                  opacity: 1,
-                  scale: 1.1,
-                }}
-                transition={{ duration: 0.3 }}
-              />
-            </motion.div>
+              </div>
+            </div>
             
             {/* Bio Text */}
             <div className="space-y-6">
@@ -479,23 +340,19 @@ const About: React.FC = () => {
               
               <div className="space-y-4 text-white/80 leading-relaxed">
                 <p>
-                  Hi, I'm a Computer Science student at Chandigarh University, driven by a passion for turning ideas into reality through code, creativity, and cutting-edge technology.
+                  Remember that kid who dismantled every gadget just to see how it worked? That's me — except now I build instead of break, knowing every little spec and how things truly work.
                 </p>
-                
                 <p>
-                  🧠 My core strength lies in Flutter development, where I build elegant, high-performance, cross-platform apps that work flawlessly across Android and iOS. From meme aggregation platforms to smart productivity tools, I focus on creating intuitive mobile experiences that users genuinely enjoy.
+                  I'm a Computer Science student at Chandigarh University with a superpower: Flutter development. I craft cross-platform apps that don't just function — they flow. Every swipe feels right, every feature serves a purpose.
                 </p>
-                
                 <p>
-                  🤖 I'm also deeply fascinated by the world of Generative AI and its potential to revolutionize the way we build, create, and interact with technology. I constantly explore how GenAI can be integrated into mobile apps — whether it's through intelligent assistants, image generation, or personalized experiences — to deliver next-gen functionality.
+                  My obsession? Generative AI. I'm weaving AI magic into mobile experiences — intelligent assistants, image generators, personalized interactions that feel almost telepathic. I live at the intersection where stunning UI/UX meets bleeding-edge technology.
                 </p>
-                
                 <p>
-                  ⚡ I thrive at the intersection of UI/UX design, mobile innovation, and evolving tech ecosystems. Whether it's experimenting with new frameworks, contributing to futuristic projects, or pushing the boundaries of what's possible — I'm all in.
+                  I don't just follow trends; I chase the ones that haven't been invented yet. Every project pushes boundaries, breaks conventions, and maybe changes how people interact with their world.
                 </p>
-                
                 <p>
-                  When I'm not building, I'm learning. When I create, I aim to inspire.
+                  That curious kid is still here, now armed with skills to turn obsessive attention to detail into code that matters. The best part? I'm just getting started.
                 </p>
               </div>
               

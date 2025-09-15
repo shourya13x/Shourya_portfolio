@@ -239,10 +239,7 @@ const Hero: React.FC = () => {
             transition={{ delay: 0.8, duration: 0.6 }}
             className="text-lg md:text-xl text-white/90 mb-8 leading-relaxed max-w-xl"
           >
-            Fueled by a deep passion for technology and gaming, I'm a curious explorer of gadgets, operating systems, and the hardware-software synergy that brings them to life. 
-            I love diving into device specs, understanding how things work, and turning that obsession into building sleek, high-performance apps. 
-            With every line of code, I aim to create digital experiences that excite users—just like great games and innovative tech excite me—and build them better, 
-            because for me, tech isn't just a career, it's a lifestyle.
+            "Tech runs through my veins like code through processors. I live for the rush of understanding how things tick, then building digital experiences that make others fall in love with technology too."
           </motion.p>
           
 

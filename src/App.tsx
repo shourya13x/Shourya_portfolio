@@ -9,9 +9,7 @@ import Projects from '@/components/Projects/Projects';
 import Experience from '@/components/Experience/Experience';
 import Contact from '@/components/Contact/Contact';
 import GitHubContributions from '@/components/GitHubContributions/GitHubContributions';
-import ProfileViews from '@/components/ProfileViews';
 import CLI from '@/components/CLI/CLI';
-import MouseTrail from '@/components/MouseTrail/MouseTrail';
 import FuturisticEffects from '@/components/FuturisticEffects';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import CLIToggleSlider from '@/components/CLIToggleSlider';
@@ -231,18 +229,7 @@ const App: React.FC = () => {
             <FuturisticEffects enabled={true} />
           </ErrorBoundary>
 
-          {/* Mouse Trail Animation - Always Active */}
-          <ErrorBoundary>
-            <MouseTrail
-              enabled={true}
-              particleSize={6} // Smaller particles
-              trailLength={8} // Shorter trail
-              animationDuration={400} // Faster fade
-              throttleDelay={80} // More responsive
-              glowColor="#00FF88"
-
-            />
-          </ErrorBoundary>
+          {/* Mouse Trail removed */}
 
 
 
@@ -280,9 +267,6 @@ const App: React.FC = () => {
                     <Projects />
                     <Experience />
                     <Contact />
-
-                    {/* Profile Views Widget - At the end of portfolio */}
-                    <ProfileViews />
 
                     {/* Footer */}
                     <Footer />

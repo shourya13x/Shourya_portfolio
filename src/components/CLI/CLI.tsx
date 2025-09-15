@@ -126,12 +126,6 @@ const CLI: React.FC = () => {
       category: 'system'
     },
     {
-      name: 'trail',
-      description: 'Control mouse trail effects',
-      usage: 'trail [on|off|status]',
-      category: 'system'
-    },
-    {
       name: 'wheel',
       description: 'Interact with the rotating wheels',
       usage: 'wheel [status|info|spin]',
@@ -529,20 +523,7 @@ const CLI: React.FC = () => {
         
 
         
-      case 'trail':
-        const trailCmd = args[0]?.toLowerCase();
-        if (!trailCmd) {
-          addOutput('🐭 MOUSE TRAIL STATUS:\n\n✨ Status: ACTIVE (GUI mode only)\n🎨 Trail Count: 12 elements\n⏱️  Trail Lifetime: 600ms\n🎯 Tracking: Real-time cursor movement\n💫 Animation: Smooth spring physics\n\nAvailable commands:\n  trail status - Show detailed status\n  trail on - Enable trails (GUI mode only)\n  trail off - Disable trails\n\n✨ The mouse trail creates beautiful white pill-shaped\nelements that follow your cursor with smooth animations!');
-        } else if (trailCmd === 'status') {
-          addOutput('🐭 DETAILED MOUSE TRAIL STATUS:\n\nSystem: MouseTrail v1.0\nRenderer: Framer Motion + React\nPhysics: Spring animation (stiffness: 500)\nMax Trails: 12 concurrent elements\nLifetime: 600ms per trail\nThrottle: ~60fps updates\nShape: White pill (32x16px)\nEffects: Glow + highlight + fade\n\nPerformance Metrics:\n- GPU Accelerated: ✅ YES\n- Memory Usage: LOW\n- CPU Impact: MINIMAL\n- Mobile Optimized: ✅ YES\n\nTrail Physics:\n- Spring Stiffness: 500\n- Damping: 50\n- Mass: 0.5\n- Scale Animation: 1.0 → 0.3\n- Opacity: 0.9 → 0.0');
-        } else if (trailCmd === 'on') {
-          addOutput('✨ MOUSE TRAIL ENABLED!\n\n🎯 Trail effects are now active in GUI mode.\n\nMove your cursor around to see the beautiful white\npill-shaped elements following your mouse!\n\n⚡ Features enabled:\n- Real-time cursor tracking\n- Smooth spring animations\n- Glowing white trail elements\n- Fade-out effects\n\n(Note: Trails only appear in GUI mode for optimal UX)');
-        } else if (trailCmd === 'off') {
-          addOutput('🚫 MOUSE TRAIL DISABLED!\n\n❌ Trail effects have been turned off.\n\n(This is just a demo - actual trail control would\nrequire state management integration)\n\nTo re-enable: trail on');
-        } else {
-          addOutput(`Unknown trail command: ${trailCmd}\nTry: trail, trail status, trail on, trail off`);
-        }
-        break;
+      // Mouse trail feature removed
         
       case 'wheel':
         const wheelCmd = args[0]?.toLowerCase();

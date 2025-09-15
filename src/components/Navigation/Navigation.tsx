@@ -5,6 +5,83 @@ import { cn, downloadResume } from '@/utils';
 import type { NavigationItem } from '@/types';
 import '@/components/FuturisticEffects/FuturisticEffects.css';
 
+// Butter-smooth scrolling helper with distance-based duration, gentle easing, and cancellation
+const easeInOutSine = (t: number) => -(Math.cos(Math.PI * t) - 1) / 2;
+
+let activeScrollCancel: (() => void) | null = null;
+
+const smoothScrollTo = (targetY: number, customDuration?: number) => {
+  const prefersReducedMotion =
+    typeof window !== 'undefined' &&
+    window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (prefersReducedMotion) {
+    window.scrollTo({ top: targetY, behavior: 'auto' });
+    return;
+  }
+
+  // Cancel any previous animation
+  if (activeScrollCancel) {
+    activeScrollCancel();
+    activeScrollCancel = null;
+  }
+
+  const scroller = document.scrollingElement || document.documentElement;
+  const startY = scroller.scrollTop;
+  const distanceY = targetY - startY;
+  const absDistance = Math.abs(distanceY);
+  // Dynamic duration: quick for short jumps, capped for long jumps
+  const duration = typeof customDuration === 'number'
+    ? customDuration
+    : Math.min(Math.max(180 + absDistance * 0.22, 240), 600);
+  const startTime = performance.now();
+  let rafId = 0;
+  let cancelled = false;
+
+  const cancel = () => {
+    cancelled = true;
+    if (rafId) cancelAnimationFrame(rafId);
+    removeInterruptionListeners();
+  };
+
+  const onUserInterruption = () => cancel();
+
+  const addInterruptionListeners = () => {
+    window.addEventListener('wheel', onUserInterruption, { passive: true, once: true });
+    window.addEventListener('touchstart', onUserInterruption, { passive: true, once: true });
+    window.addEventListener('pointerdown', onUserInterruption, { passive: true, once: true });
+    window.addEventListener('keydown', onUserInterruption, { passive: true, once: true });
+  };
+
+  const removeInterruptionListeners = () => {
+    window.removeEventListener('wheel', onUserInterruption as EventListener);
+    window.removeEventListener('touchstart', onUserInterruption as EventListener);
+    window.removeEventListener('pointerdown', onUserInterruption as EventListener);
+    window.removeEventListener('keydown', onUserInterruption as EventListener);
+  };
+
+  activeScrollCancel = cancel;
+  addInterruptionListeners();
+
+  const step = (now: number) => {
+    if (cancelled) return;
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = easeInOutSine(progress);
+    const nextY = Math.round(startY + distanceY * eased);
+    scroller.scrollTop = nextY;
+    if (progress < 1) {
+      rafId = requestAnimationFrame(step);
+    } else {
+      removeInterruptionListeners();
+      activeScrollCancel = null;
+    }
+  };
+
+  rafId = requestAnimationFrame(step);
+};
+
 const navigationItems: NavigationItem[] = [
   { id: 'home', label: 'Home', href: '#hero', icon: 'Home' },
   { id: 'about', label: 'About', href: '#about', icon: 'User' },
@@ -260,10 +337,8 @@ const Navigation: React.FC = () => {
       const offset = 80;
       const elementPosition = element.getBoundingClientRect().top + window.pageYOffset - offset;
       
-      window.scrollTo({
-        top: elementPosition,
-        behavior: 'smooth'
-      });
+      // Butter-smooth scroll with easing
+      smoothScrollTo(elementPosition, 950);
       
       setActiveSection(id);
       setIsMenuOpen(false);

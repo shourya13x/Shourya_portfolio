@@ -3,6 +3,17 @@
 @tailwind utilities;
 
 @layer base {
+  /* Global smooth scrolling with accessibility fallback */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
   * {
     @apply border-gray-800;
   }
@@ -17,6 +28,11 @@
   
   button, a, input, textarea, select, [role="button"] {
     cursor: pointer;
+  }
+
+  /* Prevent content from being hidden behind fixed header on anchor jumps */
+  section[id] {
+    scroll-margin-top: 80px; /* matches nav offset in Navigation.tsx */
   }
 }
 
