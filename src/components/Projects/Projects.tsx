@@ -3,27 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Github, 
   Eye, 
-  Code, 
   Smartphone, 
   Monitor, 
   Package,
-  Laugh,
-  Newspaper,
-  Calculator,
-  StickyNote,
-  Bot,
-  Droplets,
-  Zap,
-  Database,
-  Mic,
-  Brain,
-  Target,
-  TrendingUp,
-  Palette,
-  Shield,
-  Globe,
-  Smartphone as Mobile,
-  Cpu
+  Brain
 } from 'lucide-react';
 import { useVisibility } from '@/hooks';
 import '@/components/FuturisticEffects/FuturisticEffects.css';
@@ -39,7 +22,7 @@ const Projects: React.FC = () => {
     { id: 'all', label: 'All Projects', icon: Package },
     { id: 'web', label: 'Web Apps', icon: Monitor },
     { id: 'mobile', label: 'Mobile Apps', icon: Smartphone },
-    { id: 'library', label: 'Libraries', icon: Code },
+    { id: 'genai', label: 'Gen AI', icon: Brain },
   ];
   
   const projects: Project[] = [
@@ -73,7 +56,7 @@ const Projects: React.FC = () => {
       technologies: ['Flutter', 'Dart', 'Provider', 'REST API Integration', 'Material 3', 'Multi-API'],
       liveUrl: 'https://www.linkedin.com/posts/shouryagupta13_flutter-opensource-newsapp-activity-7345943370243981314-qlnl?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAAD2WtkIBC25BCQHwNG5SwDfH-vdwIGY3g_8',
       githubUrl: 'https://github.com/shourya13x/newsflow',
-      imageUrl: '/projects/newsflow.jpg',
+      imageUrl: '/projects/newsflow.png',
       features: [
         'Real-time news from 5 top APIs (NewsAPI, GNews, Bing News, MediaStack, NewsData.io)',
         'Effortless category filtering and unified structure',
@@ -94,7 +77,7 @@ const Projects: React.FC = () => {
       technologies: ['Flutter', 'Dart', 'Mathematical Computing', 'Glassmorphism UI', 'Cross-Platform'],
       liveUrl: 'https://www.linkedin.com/posts/shouryagupta13_calcnova-flutter-madewithflutter-activity-7344476195134087169-hOyW?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAAD2WtkIBC25BCQHwNG5SwDfH-vdwIGY3g_8',
       githubUrl: 'https://github.com/shourya13x/calcnova',
-      imageUrl: '/projects/calcnova.jpg',
+      imageUrl: '/projects/calcnova.png',
       features: [
         '10+ Calculators: Scientific, Basic, Percentage, Discount, GST, Date Difference, Birthday + Age, BMI, EMI, Profit & Loss',
         '10+ Converters: Length, Mass, Temperature, Area, Time, Currency, Data Storage, Speed, Volume, Number System',
@@ -115,7 +98,7 @@ const Projects: React.FC = () => {
       technologies: ['Flutter', 'SQLite', 'CRUD Operations', 'InheritedWidget'],
       liveUrl: 'https://drive.google.com/file/d/1Ga0wAoM0DvH9ivACWbvkFYSVkg-tHexu/view',
       githubUrl: 'https://github.com/shourya13x/savenote',
-      imageUrl: '/projects/savenote.jpg',
+      imageUrl: '/projects/savenote-thumbnail.png',
       features: [
         'Seamless note capture with intuitive UI',
         'Robust SQLite local data storage',
@@ -135,7 +118,7 @@ const Projects: React.FC = () => {
       longDescription: 'Developed an advanced AI assistant inspired by Iron Man\'s JARVIS, featuring voice recognition, Google Gemini AI integration, and a stunning holographic UI with real-time system monitoring.',
       technologies: ['Flutter', 'Riverpod', 'Google Gemini API', 'Speech Recognition', 'Text-to-Speech', 'Rive Animations'],
       githubUrl: 'https://github.com/shourya13x/jarvis-ai',
-      imageUrl: '/projects/jarvis-ai.jpg',
+      imageUrl: '/projects/jarvis-ai-thumbnail.png',
       features: [
         'Voice recognition with real-time feedback',
         'Google Gemini AI integration for intelligent responses',
@@ -148,26 +131,29 @@ const Projects: React.FC = () => {
       status: 'in-progress',
       year: 2024
     },
+    
     {
-      id: 'water-tracker-app',
-      name: '💧 HydrateFlow - Water Intake Tracker',
-      description: 'Smart water intake tracker with personalized hydration goals and beautiful UI',
-      longDescription: 'Building an intelligent water intake tracking app with personalized hydration goals, beautiful animations, and smart reminders to help users maintain optimal hydration levels.',
-      technologies: ['Flutter', 'Provider', 'SQLite', 'Local Notifications', 'Custom Animations', 'Health Integration'],
-      githubUrl: 'https://github.com/shourya13x/hydrateflow',
-      imageUrl: '/projects/hydrateflow.jpg',
+      id: 'portfolio-website',
+      name: '🌐 Interactive Portfolio Website',
+      description: 'Modern, responsive portfolio website with advanced animations and 3D elements',
+      longDescription: 'A cutting-edge portfolio website featuring interactive 3D elements, smooth animations, and a modern design that showcases projects and skills in an engaging way.',
+      technologies: ['React', 'Three.js', 'Framer Motion', 'TypeScript', 'Tailwind CSS', 'Vite'],
+      imageUrl: '/projects/portfolio-website.png',
+      liveUrl: 'https://www.shourya.online/',
+      githubUrl: 'https://github.com/shourya13x/Shourya_portfolio',
       features: [
-        'Personalized daily hydration goals based on weight and activity',
-        'Beautiful water drop animations and progress visualization',
-        'Smart reminder system with customizable intervals',
-        'Daily, weekly, and monthly hydration statistics',
-        'Integration with health apps for comprehensive tracking',
-        'Offline-first design with local data storage'
+        'Interactive 3D animations',
+        'Smooth page transitions',
+        'Responsive design for all devices',
+        'Dark/light mode toggle',
+        'Performance optimized',
+        'SEO friendly structure'
       ],
-      category: 'mobile',
-      status: 'in-progress',
-      year: 2024
-    }
+      category: 'web',
+      status: 'completed',
+      year: 2025
+    },
+    
   ];
   
   const filteredProjects = selectedCategory === 'all' 
@@ -194,51 +180,9 @@ const Projects: React.FC = () => {
     }
   };
   
-  // Function to get relevant icons for each project
-  const getProjectIcons = (projectId: string) => {
-    const iconMap: Record<string, { icon: React.ComponentType<any>; label: string }[]> = {
-      'memeverse': [
-        { icon: Laugh, label: 'Entertainment' },
-        { icon: Palette, label: 'Material Design' },
-        { icon: TrendingUp, label: 'Trending' },
-        { icon: Globe, label: 'Social Media' }
-      ],
-      'newsflow-app': [
-        { icon: Newspaper, label: 'News' },
-        { icon: Database, label: 'Multi-API' },
-        { icon: Globe, label: 'Real-time' },
-        { icon: TrendingUp, label: 'Updates' }
-      ],
-      'calcnova-calculator': [
-        { icon: Calculator, label: 'Calculator' },
-        { icon: Zap, label: 'Fast' },
-        { icon: Target, label: 'Precise' },
-        { icon: Palette, label: 'Beautiful UI' }
-      ],
-      'savenote-app': [
-        { icon: StickyNote, label: 'Notes' },
-        { icon: Database, label: 'SQLite' },
-        { icon: Shield, label: 'Secure' },
-        { icon: Palette, label: 'Minimal' }
-      ],
-      'jarvis-ai': [
-        { icon: Bot, label: 'AI Assistant' },
-        { icon: Brain, label: 'Intelligent' },
-        { icon: Mic, label: 'Voice Control' },
-        { icon: Cpu, label: 'System Monitor' }
-      ],
-      'water-tracker-app': [
-        { icon: Droplets, label: 'Hydration' },
-        { icon: Target, label: 'Goals' },
-        { icon: TrendingUp, label: 'Progress' },
-        { icon: Mobile, label: 'Mobile App' }
-      ]
-    };
-    return iconMap[projectId] || [{ icon: Package, label: 'Project' }];
-  };
+  // Removed: icon overlay mapping; not used after simplifying image area
 
   const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
-    const projectIcons = getProjectIcons(project.id);
     const [isHovered, setIsHovered] = React.useState(false);
     
     return (
@@ -263,110 +207,23 @@ const Projects: React.FC = () => {
           >
           {/* Enhanced Project Image */}
           <motion.div 
-            className="relative aspect-video bg-transparent mb-6 rounded-lg border border-white/5 group-hover:border-white/10 transition-all duration-500"
+            className="relative aspect-video bg-transparent mb-6 rounded-lg border border-white/5 group-hover:border-white/10 transition-all duration-500 overflow-hidden"
             whileHover={{ 
               boxShadow: "0 20px 40px rgba(0, 153, 255, 0.2)",
               borderColor: "rgba(0, 153, 255, 0.3)",
             }}
             transition={{ duration: 0.3 }}
           >
-            {/* Animated Background Pattern */}
-            <motion.div 
-              className="absolute inset-0 opacity-5"
-              animate={isHovered ? {
-                opacity: [0.05, 0.1, 0.05],
-              } : { opacity: 0.05 }}
-              transition={{
-                duration: 2,
-                repeat: isHovered ? Infinity : 0,
-                ease: "easeInOut",
-              }}
-            >
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[length:20px_20px]"></div>
-            </motion.div>
-            
-            {/* Interactive Project Icons Overlay */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="grid grid-cols-2 gap-2 sm:gap-3 p-3 sm:p-4 relative z-10">
-                {projectIcons.map(({ icon: Icon, label }, iconIndex) => (
-                  <motion.div
-                    key={iconIndex}
-                    className="group flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 bg-white/3 rounded-xl border border-white/5 relative"
-                    title={label}
-                    aria-label={label}
-                    whileHover={{ 
-                      scale: 1.1,
-                      backgroundColor: 'rgba(0, 153, 255, 0.1)',
-                      borderColor: 'rgba(0, 153, 255, 0.3)',
-                    }}
-                    animate={isHovered ? {
-                      y: [0, -5, 0],
-                      rotate: [0, 5, -5, 0],
-                    } : { y: 0, rotate: 0 }}
-                    transition={{
-                      duration: 2,
-                      repeat: isHovered ? Infinity : 0,
-                      ease: "easeInOut",
-                      delay: iconIndex * 0.2,
-                    }}
-                  >
-                    {/* Tooltip label */}
-                    <div className="absolute bottom-1 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-md bg-dark-200/90 border border-white/10 text-[10px] sm:text-xs text-white/80 whitespace-nowrap shadow-lg opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 pointer-events-none z-20">
-                      {label}
-                    </div>
-                    {/* Icon glow effect */}
-                    <motion.div
-                      className="absolute inset-0 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl"
-                      animate={isHovered ? {
-                        opacity: [0, 0.3, 0],
-                        scale: [0.8, 1.2, 0.8],
-                      } : { opacity: 0, scale: 0.8 }}
-                      transition={{
-                        duration: 1.5,
-                        repeat: isHovered ? Infinity : 0,
-                        ease: "easeInOut",
-                        delay: iconIndex * 0.1,
-                      }}
-                    />
-                    
-                    <motion.div
-                      animate={isHovered ? {
-                        rotate: [0, 10, -10, 0],
-                        scale: [1, 1.1, 1],
-                      } : { rotate: 0, scale: 1 }}
-                      transition={{
-                        duration: 1,
-                        repeat: isHovered ? Infinity : 0,
-                        ease: "easeInOut",
-                        delay: iconIndex * 0.15,
-                      }}
-                    >
-                      <Icon 
-                        size={24} 
-                        className="text-white/70 group-hover:text-white transition-all duration-300 relative z-10"
-                      />
-                    </motion.div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-            
-            {/* Scanning line effect */}
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/20 to-transparent"
-              style={{
-                width: '2px',
-                background: 'linear-gradient(90deg, transparent, rgba(0,153,255,0.6), transparent)',
-              }}
-              animate={isHovered ? {
-                x: [-50, 400],
-              } : { x: -50 }}
-              transition={{
-                duration: 2,
-                repeat: isHovered ? Infinity : 0,
-                ease: "easeInOut",
-                repeatDelay: 1,
-              }}
+            {/* Image layer */}
+            <img 
+              src={project.imageUrl} 
+              alt={project.name} 
+              className={cn(
+                'absolute inset-0 w-full h-full bg-black/40 transition-transform duration-500',
+                (project.id === 'savenote-app' || project.id === 'jarvis-ai') 
+                  ? 'object-cover transform scale-125' 
+                  : 'object-contain'
+              )}
             />
           </motion.div>
             
@@ -376,10 +233,12 @@ const Projects: React.FC = () => {
                 'px-2 py-1 text-xs font-semibold rounded-full',
                 project.status === 'completed' && 'bg-primary/10 text-primary border border-primary/20',
                 project.status === 'in-progress' && 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20',
+                project.status === 'coming-soon' && 'bg-purple-500/10 text-purple-400 border border-purple-500/20',
                 project.status === 'archived' && 'bg-gray-500/10 text-gray-400 border border-gray-500/20'
               )}>
                 {project.status === 'completed' && 'Completed'}
                 {project.status === 'in-progress' && 'In Progress'}
+                {project.status === 'coming-soon' && 'Coming Soon'}
                 {project.status === 'archived' && 'Archived'}
               </span>
             </div>
@@ -474,7 +333,7 @@ const Projects: React.FC = () => {
           
           {/* Enhanced Action Links */}
           <div className="flex flex-wrap gap-3 mt-auto">
-            {project.liveUrl && (
+            {project.liveUrl && project.status !== 'coming-soon' && (
               <motion.a
                 href={project.liveUrl}
                 target="_blank"
@@ -511,7 +370,7 @@ const Projects: React.FC = () => {
               </motion.a>
             )}
             
-            {project.githubUrl && (
+            {project.githubUrl && project.status !== 'coming-soon' && (
               <motion.a
                 href={project.githubUrl}
                 target="_blank"
@@ -547,6 +406,34 @@ const Projects: React.FC = () => {
                 </motion.div>
                 <span className="relative z-10">Code</span>
               </motion.a>
+            )}
+            
+            {project.status === 'coming-soon' && (
+              <motion.div
+                className="flex items-center gap-2 text-xs sm:text-sm text-purple-400"
+                animate={{
+                  opacity: [0.7, 1, 0.7],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
+                <motion.div
+                  animate={{
+                    rotate: [0, 360],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
+                >
+                  <Brain size={14} />
+                </motion.div>
+                <span>Coming Soon</span>
+              </motion.div>
             )}
           </div>
           
@@ -584,10 +471,10 @@ const Projects: React.FC = () => {
   };
   
   return (
-    <section id="projects" ref={elementRef} className="py-12 sm:py-20 lg:py-32 relative">
+    <section id="projects" ref={elementRef} className="section-y relative">
       {/* Ultra-Subtle Background Overlay - Minimal interference with space effects */}
       <div className="absolute inset-0 bg-gradient-to-br from-dark-300/3 via-dark-200/2 to-dark-300/3" />
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+              <div className="container-page relative z-10">
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -596,11 +483,11 @@ const Projects: React.FC = () => {
         >
           {/* Section Header */}
           <motion.div variants={itemVariants} className="text-center">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold mb-6 whitespace-nowrap">
-              <span className="text-primary">02.</span>{' '}
+            <div className="eyebrow mb-3">02. Projects</div>
+            <h2 className="h2-title mb-4 whitespace-nowrap">
               <span className="holographic-text" data-text="Featured Projects">Featured Projects</span>
             </h2>
-            <p className="text-base sm:text-lg text-white/80 max-w-3xl mx-auto px-4">
+            <p className="prose-muted max-w-3xl mx-auto px-4">
               Here are some of my favorite projects that showcase my skills and experience. 
               Each project represents a unique challenge and learning opportunity.
             </p>
@@ -708,7 +595,7 @@ const Projects: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3 }}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-stretch"
+                className="card-grid items-stretch"
               >
                 {filteredProjects.map((project) => (
                   <ProjectCard

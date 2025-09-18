@@ -154,8 +154,8 @@ const Contact: React.FC = () => {
   };
   
   return (
-    <section id="contact" ref={elementRef} className="py-20 lg:py-32 relative">
-              <div className="max-w-7xl mx-auto px-6 relative z-10">
+    <section id="contact" ref={elementRef} className="section-y relative">
+              <div className="container-page relative z-10">
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -164,11 +164,11 @@ const Contact: React.FC = () => {
         >
           {/* Section Header */}
           <motion.div variants={itemVariants} className="text-center">
-            <h2 className="text-3xl lg:text-5xl font-bold mb-6">
-              <span className="text-primary">04.</span>{' '}
+            <div className="eyebrow mb-3">04. Contact</div>
+            <h2 className="h2-title mb-4">
               <span className="text-white">Get In Touch</span>
             </h2>
-            <p className="text-lg text-white/80 max-w-3xl mx-auto">
+            <p className="prose-muted max-w-3xl mx-auto">
               I'm always interested in hearing about new opportunities and interesting projects. 
               Whether you have a question or just want to say hi, I'll try my best to get back to you!
             </p>

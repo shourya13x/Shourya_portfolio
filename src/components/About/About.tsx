@@ -138,7 +138,7 @@ const About: React.FC = () => {
   };
   
   return (
-    <section id="about" ref={elementRef} className="py-20 lg:py-32 relative">
+    <section id="about" ref={elementRef} className="section-y relative">
       {/* Ultra-Subtle Background Overlay - Minimal interference with space effects */}
       <div className="absolute inset-0 bg-gradient-to-br from-dark-300/5 via-dark-200/3 to-dark-300/5" />
       
@@ -149,7 +149,7 @@ const About: React.FC = () => {
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-accent/3 rounded-full blur-3xl animate-pulse delay-500" />
       </div>
       
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
+      <div className="container-page relative z-10">
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -158,11 +158,11 @@ const About: React.FC = () => {
         >
           {/* About Me Section */}
           <motion.div variants={itemVariants} className="text-center">
-            <h2 className="text-3xl lg:text-5xl font-bold mb-6">
-              <span className="text-primary">01.</span>{' '}
+            <div className="eyebrow mb-3">01. About</div>
+            <h2 className="h2-title mb-4">
               <span className="holographic-text" data-text="About Me">About Me</span>
             </h2>
-            <p className="text-lg text-white/80 max-w-3xl mx-auto">
+            <p className="prose-muted max-w-3xl mx-auto">
               I'm a future-focused software engineer passionate about crafting meaningful digital experiences. 
               With 2+ years of hands-on development, I've built everything from intuitive mobile apps to 
               full-scale web solutions — and now, I'm diving deep into the world of GenAI and emerging tech to shape what's next.

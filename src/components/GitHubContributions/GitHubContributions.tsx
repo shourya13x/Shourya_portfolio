@@ -269,7 +269,7 @@ const GitHubContributions: React.FC = () => {
     <section
       ref={elementRef}
       id="github-contributions"
-      className="relative py-20 px-6"
+      className="relative section-y px-6"
     >
       {/* Minimal Background Pattern - Space effects priority */}
       <div className="absolute inset-0 opacity-2">
@@ -282,7 +282,7 @@ const GitHubContributions: React.FC = () => {
         }} />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto">
+      <div className="relative z-10 container-page">
         {/* Section Header */}
         <motion.div
           variants={containerVariants}
@@ -290,16 +290,16 @@ const GitHubContributions: React.FC = () => {
           animate="visible"
           className="text-center mb-16"
         >
-          <motion.div variants={itemVariants} className="flex items-center justify-center gap-3 mb-6">
-            <Github size={32} className="text-primary" />
-            <h2 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+          <motion.div variants={itemVariants} className="mb-6">
+            <div className="eyebrow mb-2 flex items-center justify-center gap-2"><Github size={18} /> GitHub</div>
+            <h2 className="h2-title bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent text-center">
               GitHub Activity
             </h2>
           </motion.div>
           
           <motion.p 
             variants={itemVariants}
-            className="text-lg text-white/70 max-w-2xl mx-auto"
+            className="prose-muted max-w-2xl mx-auto"
           >
             My coding journey visualized through GitHub contributions, showcasing consistent development activity and project engagement.
           </motion.p>
@@ -548,7 +548,7 @@ const GitHubContributions: React.FC = () => {
                         animate={{ opacity: 1, scaleX: 1 }}
                         transition={{ delay: 0.5 + i * 0.1 }}
                         className="absolute w-full h-px bg-white/5"
-                        style={{ top: `${(i / 5) * 100}%` }}
+                        style={{ top: `${(i / 5) * 100}%`, boxShadow: i !== 0 && i !== 5 ? '0 0 8px rgba(0,255,136,0.05)' : undefined }}
                       />
                     ))}
                   </div>
@@ -574,8 +574,8 @@ const GitHubContributions: React.FC = () => {
                                   ease: "easeOut"
                                 }}
                                 className={cn(
-                                  'bg-gradient-to-t from-primary/40 to-secondary/40 rounded-t-sm relative overflow-hidden cursor-pointer transition-all duration-300',
-                                  chartMode === 'bar' ? 'w-10 sm:w-12 md:w-14 group-hover:from-primary/70 group-hover:to-secondary/70' : 'w-8 group-hover:from-primary/60 group-hover:to-secondary/60'
+                                  'bg-gradient-to-t from-primary/40 to-secondary/40 rounded-md relative overflow-hidden cursor-pointer transition-all duration-300 backdrop-blur-[1px]',
+                                  chartMode === 'bar' ? 'w-8 sm:w-10 md:w-12 group-hover:from-primary/70 group-hover:to-secondary/70' : 'w-6 group-hover:from-primary/60 group-hover:to-secondary/60'
                                 )}
                               >
                                 {/* Glowing effect */}
@@ -644,8 +644,13 @@ const GitHubContributions: React.FC = () => {
                       <defs>
                         <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                           <stop offset="0%" stopColor="#00ff88" stopOpacity="1" />
-                          <stop offset="50%" stopColor="#0099ff" stopOpacity="1" />
+                          <stop offset="60%" stopColor="#36c7ff" stopOpacity="1" />
                           <stop offset="100%" stopColor="#00ff88" stopOpacity="1" />
+                        </linearGradient>
+                        <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                          <stop offset="0%" stopColor="#00ff88" stopOpacity="0.24" />
+                          <stop offset="80%" stopColor="#0099ff" stopOpacity="0.06" />
+                          <stop offset="100%" stopColor="#0099ff" stopOpacity="0" />
                         </linearGradient>
                         <filter id="glow">
                           <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
@@ -656,6 +661,42 @@ const GitHubContributions: React.FC = () => {
                         </filter>
                       </defs>
                       
+                      {/* Area Fill Under Line */}
+                      {monthlyData.length > 1 && (
+                        <motion.path
+                          d={(() => {
+                            const maxContributions = Math.max(...monthlyData.map(d => d.contributions), 1);
+                            const chartHeight = 85;
+                            const bottomPadding = 15;
+                            const baseY = 100 - bottomPadding;
+                            const points = monthlyData.map((month, index) => {
+                              const x = ((index + 0.5) / monthlyData.length) * 100;
+                              const h = Math.max((month.contributions / maxContributions) * chartHeight, month.contributions > 0 ? 2 : 0);
+                              const y = 100 - bottomPadding - h;
+                              return { x, y };
+                            });
+                            if (points.length < 2) return '';
+                            let path = `M ${points[0].x},${baseY} L ${points[0].x},${points[0].y}`;
+                            for (let i = 1; i < points.length; i++) {
+                              const current = points[i];
+                              const prev = points[i - 1];
+                              const controlOffset = Math.min((current.x - prev.x) * 0.2, 15);
+                              const cp1x = prev.x + controlOffset;
+                              const cp1y = prev.y;
+                              const cp2x = current.x - controlOffset;
+                              const cp2y = current.y;
+                              path += ` C ${cp1x},${cp1y} ${cp2x},${cp2y} ${current.x},${current.y}`;
+                            }
+                            path += ` L ${points[points.length - 1].x},${baseY} Z`;
+                            return path;
+                          })()}
+                          fill="url(#areaGradient)"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: 1.4, duration: 0.6 }}
+                        />
+                      )}
+
                       {/* Animated Snake Line Path */}
                       {monthlyData.length > 1 && (
                         <motion.path
@@ -684,8 +725,8 @@ const GitHubContributions: React.FC = () => {
                               const currentPoint = points[i];
                               const prevPoint = points[i - 1];
                               
-                              // Simple smooth curve with minimal control points
-                              const controlOffset = Math.min((currentPoint.x - prevPoint.x) * 0.2, 15);
+                              // Smooth curve with restrained control offset for stability
+                              const controlOffset = Math.min((currentPoint.x - prevPoint.x) * 0.15, 12);
                               
                               const cp1x = prevPoint.x + controlOffset;
                               const cp1y = prevPoint.y;
@@ -698,131 +739,20 @@ const GitHubContributions: React.FC = () => {
                             return path;
                           })()}
                           stroke="url(#lineGradient)"
-                          strokeWidth="0.8"
+                          strokeWidth="1.4"
                           fill="none"
                           filter="url(#glow)"
                           initial={{ pathLength: 0, opacity: 0 }}
                           animate={{ pathLength: 1, opacity: 1 }}
                           transition={{ 
-                            pathLength: { duration: 3, delay: 1.8, ease: "easeInOut" },
-                            opacity: { duration: 0.5, delay: 1.8 }
+                            pathLength: { duration: 1.6, delay: 1.2, ease: "easeInOut" },
+                            opacity: { duration: 0.4, delay: 1.2 }
                           }}
                           strokeLinecap="round"
                           strokeLinejoin="round"
                         />
                       )}
-
-                      {/* Snake Traveling Animation */}
-                      {monthlyData.length > 1 && (
-                        <g>
-                          <motion.circle
-                            r="1"
-                            fill="#00ff88"
-                            opacity="0.8"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: [0, 0.8, 0.8, 0] }}
-                            transition={{
-                              duration: 4,
-                              delay: 5,
-                              ease: "easeInOut",
-                              repeat: Infinity,
-                              repeatDelay: 3
-                            }}
-                          >
-                            <animateMotion
-                              dur="4s"
-                              begin="5s"
-                              repeatCount="indefinite"
-                              path={(() => {
-                                const maxContributions = Math.max(...monthlyData.map(d => d.contributions), 1);
-                                const chartHeight = 85;
-                                const bottomPadding = 15;
-                                
-                                const points = monthlyData.map((month, index) => {
-                                  const xPercent = ((index + 0.5) / monthlyData.length) * 100;
-                                  const barHeightPercent = Math.max((month.contributions / maxContributions) * chartHeight, month.contributions > 0 ? 2 : 0);
-                                  const yPercent = 100 - bottomPadding - barHeightPercent;
-                                  return { x: xPercent, y: yPercent };
-                                });
-                                
-                                if (points.length < 2) return '';
-                                
-                                let path = `M ${points[0].x},${points[0].y}`;
-                                
-                                                                 for (let i = 1; i < points.length; i++) {
-                                   const currentPoint = points[i];
-                                   const prevPoint = points[i - 1];
-                                   
-                                   const controlOffset = Math.min((currentPoint.x - prevPoint.x) * 0.2, 15);
-                                   
-                                   const cp1x = prevPoint.x + controlOffset;
-                                   const cp1y = prevPoint.y;
-                                   const cp2x = currentPoint.x - controlOffset;
-                                   const cp2y = currentPoint.y;
-                                   
-                                   path += ` C ${cp1x},${cp1y} ${cp2x},${cp2y} ${currentPoint.x},${currentPoint.y}`;
-                                 }
-                                
-                                return path;
-                              })()}
-                            />
-                          </motion.circle>
-                          
-                          {/* Trail effect */}
-                          <motion.circle
-                            r="0.6"
-                            fill="#0099ff"
-                            opacity="0.4"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: [0, 0.4, 0.4, 0] }}
-                            transition={{
-                              duration: 4,
-                              delay: 5.2,
-                              ease: "easeInOut",
-                              repeat: Infinity,
-                              repeatDelay: 3
-                            }}
-                          >
-                            <animateMotion
-                              dur="4s"
-                              begin="5.2s"
-                              repeatCount="indefinite"
-                              path={(() => {
-                                const maxContributions = Math.max(...monthlyData.map(d => d.contributions), 1);
-                                const chartHeight = 85;
-                                const bottomPadding = 15;
-                                
-                                const points = monthlyData.map((month, index) => {
-                                  const xPercent = ((index + 0.5) / monthlyData.length) * 100;
-                                  const barHeightPercent = Math.max((month.contributions / maxContributions) * chartHeight, month.contributions > 0 ? 2 : 0);
-                                  const yPercent = 100 - bottomPadding - barHeightPercent;
-                                  return { x: xPercent, y: yPercent };
-                                });
-                                
-                                if (points.length < 2) return '';
-                                
-                                let path = `M ${points[0].x},${points[0].y}`;
-                                
-                                                                 for (let i = 1; i < points.length; i++) {
-                                   const currentPoint = points[i];
-                                   const prevPoint = points[i - 1];
-                                   
-                                   const controlOffset = Math.min((currentPoint.x - prevPoint.x) * 0.2, 15);
-                                   
-                                   const cp1x = prevPoint.x + controlOffset;
-                                   const cp1y = prevPoint.y;
-                                   const cp2x = currentPoint.x - controlOffset;
-                                   const cp2y = currentPoint.y;
-                                   
-                                   path += ` C ${cp1x},${cp1y} ${cp2x},${cp2y} ${currentPoint.x},${currentPoint.y}`;
-                                 }
-                                
-                                return path;
-                              })()}
-                            />
-                          </motion.circle>
-                        </g>
-                      )}
+                      {/* Removed traveling snake animation for a cleaner, professional look */}
 
                       {/* Data Point Dots */}
                       {monthlyData.map((month, index) => {
@@ -837,47 +767,28 @@ const GitHubContributions: React.FC = () => {
                         
                         return (
                           <g key={`dot-${month.month}`}>
-                            {/* Pulsing ring effect */}
-                            <motion.circle
-                              cx={xPercent}
-                              cy={yPercent}
-                              r="2"
-                              fill="none"
-                              stroke="#00ff88"
-                              strokeWidth="0.2"
-                              opacity="0.3"
-                              initial={{ scale: 0, opacity: 0 }}
-                              animate={{ 
-                                scale: [0, 2, 0],
-                                opacity: [0, 0.3, 0]
-                              }}
-                              transition={{
-                                duration: 3,
-                                repeat: Infinity,
-                                ease: "easeInOut",
-                                delay: 3 + index * 0.3
-                              }}
-                            />
+                            {/* Soft outer glow */}
+                            <circle cx={xPercent} cy={yPercent} r="3.2" fill="none" stroke="#00ff88" strokeOpacity="0.25" strokeWidth="0.4" />
                             
                             {/* Main dot */}
                             <motion.circle
                               cx={xPercent}
                               cy={yPercent}
-                              r="1.2"
+                              r="1.4"
                               fill="url(#lineGradient)"
-                              stroke="rgba(255, 255, 255, 0.5)"
-                              strokeWidth="0.1"
+                              stroke="rgba(255, 255, 255, 0.6)"
+                              strokeWidth="0.2"
                               initial={{ scale: 0, opacity: 0 }}
                               animate={{ scale: 1, opacity: 1 }}
                               transition={{ 
-                                delay: 2.2 + index * 0.1,
+                                delay: 1.4 + index * 0.06,
                                 duration: 0.6,
                                 type: "spring",
                                 stiffness: 300,
                                 damping: 15
                               }}
                               style={{ cursor: 'pointer' }}
-                              whileHover={{ scale: 1.5 }}
+                              whileHover={{ scale: 1.3 }}
                             />
                           </g>
                         );

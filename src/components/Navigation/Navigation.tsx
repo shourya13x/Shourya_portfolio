@@ -358,7 +358,7 @@ const Navigation: React.FC = () => {
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
         className="fixed top-0 left-0 right-0 z-30 hidden lg:block"
       >
-        <div className="mx-auto max-w-7xl px-6 py-4">
+        <div className="container-page py-4">
           <div className="flex items-center justify-center">
             {/* Navigation Links */}
             <motion.div

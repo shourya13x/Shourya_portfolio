@@ -1,12 +1,26 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import Spline from '@splinetool/react-spline';
 
 interface SplineRobotProps {
   className?: string;
+  mouseVelocity?: { x: number; y: number };
 }
 
-const SplineRobot: React.FC<SplineRobotProps> = ({ className = '' }) => {
+const SplineRobot: React.FC<SplineRobotProps> = ({ className = '', mouseVelocity }) => {
+
+  // Compute a responsiveness duration based on mouse velocity magnitude
+  const { rotateX, rotateY, responseDuration } = useMemo(() => {
+    const vx = mouseVelocity?.x ?? 0;
+    const vy = mouseVelocity?.y ?? 0;
+    const speed = Math.min(1, Math.sqrt(vx * vx + vy * vy));
+    // Map speed (0..1) to duration (fast: 0.12s, slow: 0.5s)
+    const duration = 0.5 - speed * 0.38;
+    // Subtle parallax/tilt from velocity
+    const tiltX = -(vy * 8); // invert so moving up tilts back
+    const tiltY = vx * 12;
+    return { rotateX: tiltX, rotateY: tiltY, responseDuration: Math.max(0.12, duration) };
+  }, [mouseVelocity]);
 
   return (
     <motion.div
@@ -27,15 +41,20 @@ const SplineRobot: React.FC<SplineRobotProps> = ({ className = '' }) => {
         overflow: 'hidden'
       }}
     >
-
-      
-              <Spline
+      {/* Outer motion wrapper to create a faster "look" response tied to mouse velocity */}
+      <motion.div
+        style={{ width: '100%', height: '100%' }}
+        animate={{ rotateX, rotateY }}
+        transition={{ type: 'tween', ease: 'easeOut', duration: responseDuration }}
+      >
+        <Spline
           scene="https://prod.spline.design/5UkbzuOAfdpNRs3o/scene.splinecode"
           style={{
             width: '100%',
             height: '100%'
           }}
         />
+      </motion.div>
     </motion.div>
   );
 };

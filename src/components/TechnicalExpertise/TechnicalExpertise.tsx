@@ -490,8 +490,8 @@ const TechnicalExpertise: React.FC = () => {
   };
 
   return (
-    <section id="expertise" ref={elementRef} className="py-16 lg:py-24 relative">
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
+    <section id="expertise" ref={elementRef} className="section-y relative">
+      <div className="container-page relative z-10">
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -500,13 +500,11 @@ const TechnicalExpertise: React.FC = () => {
         >
           {/* Section Header */}
           <motion.div variants={itemVariants} className="text-center">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="w-8 h-px bg-primary"></div>
-              <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-primary whitespace-nowrap">
-                Technical Expertise
-              </h2>
-            </div>
-            <p className="text-base text-white/70 max-w-2xl mx-auto">
+            <div className="eyebrow mb-3">03. Expertise</div>
+            <h2 className="h2-title mb-2">
+              Technical Expertise
+            </h2>
+            <p className="prose-muted max-w-2xl mx-auto">
               Comprehensive skill set spanning multiple technologies and domains
             </p>
           </motion.div>

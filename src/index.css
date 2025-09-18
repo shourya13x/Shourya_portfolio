@@ -144,6 +144,37 @@
 }
 
 @layer utilities {
+  /* Layout rhythm and container */
+  .container-page {
+    @apply max-w-7xl mx-auto px-6;
+  }
+
+  .section-y {
+    @apply py-16 md:py-24 lg:py-32;
+  }
+
+  /* Typography scale */
+  .eyebrow {
+    @apply font-mono text-sm tracking-[0.2em] uppercase text-primary/80; 
+  }
+
+  .h1-display {
+    @apply font-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight;
+  }
+
+  .h2-title {
+    @apply font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl leading-tight;
+  }
+
+  .prose-muted {
+    @apply text-white/80;
+  }
+
+  /* Grid helpers */
+  .card-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8;
+  }
+
   /* Mobile touch and scroll fixes */
   .prevent-horizontal-scroll {
     overflow-x: hidden !important;
@@ -176,23 +207,6 @@
     @apply bg-primary rounded-full;
   }
   
-  /* Global scrollbar styles */
-  ::-webkit-scrollbar {
-    width: 6px;
-  }
-  
-  ::-webkit-scrollbar-track {
-    background: #1a1a1a;
-  }
-  
-  ::-webkit-scrollbar-thumb {
-    background: #00ff88;
-    border-radius: 3px;
-  }
-  
-  ::-webkit-scrollbar-thumb:hover {
-    background: #00cc6a;
-  }
   
   /* Text selection */
   ::selection {

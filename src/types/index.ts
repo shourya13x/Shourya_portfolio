@@ -10,8 +10,8 @@ export interface Project {
   githubUrl?: string;
   imageUrl?: string;
   features: string[];
-  category: 'web' | 'mobile' | 'desktop' | 'library' | 'other';
-  status: 'completed' | 'in-progress' | 'archived';
+  category: 'web' | 'mobile' | 'desktop' | 'library' | 'genai' | 'other';
+  status: 'completed' | 'in-progress' | 'archived' | 'coming-soon';
   year: number;
 }
 

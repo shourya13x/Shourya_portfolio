@@ -87,7 +87,7 @@ const Hero: React.FC = () => {
     <section
       id="hero"
       ref={heroRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24"
       onMouseMove={handleMouseMove}
     >
       {/* Minimal Background Grid - Let space effects show through */}
@@ -181,7 +181,7 @@ const Hero: React.FC = () => {
       </div>
       
       {/* Main Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6">
+      <div className="relative z-10 container-page">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -200,7 +200,7 @@ const Hero: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.6 }}
-              className="text-primary font-mono text-lg md:text-xl mb-4 text-left"
+              className="eyebrow mb-3"
             >
               Hi, my name is
             </motion.p>
@@ -210,7 +210,7 @@ const Hero: React.FC = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.8 }}
-            className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold mb-4 whitespace-nowrap"
+            className="h1-display mb-2 whitespace-nowrap"
           >
             <span className="text-white">Shourya</span>{' '}
             <span className="holographic-text" data-text="Gupta">
@@ -225,7 +225,7 @@ const Hero: React.FC = () => {
             transition={{ delay: 0.6, duration: 0.6 }}
             className="h-16 md:h-20 flex items-start mb-6 w-full min-w-0"
           >
-            <h2 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl xl:text-6xl font-bold whitespace-nowrap min-w-0 flex-shrink-0">
+            <h2 className="h2-title whitespace-nowrap min-w-0 flex-shrink-0">
               <span className="glitch-text matrix-text" data-text={currentTagline}>
                 <span className="typing-cursor">{currentTagline}</span>
               </span>
@@ -237,7 +237,7 @@ const Hero: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8, duration: 0.6 }}
-            className="text-lg md:text-xl text-white/90 mb-8 leading-relaxed max-w-xl"
+            className="prose-muted text-lg md:text-xl mb-8 leading-relaxed max-w-xl"
           >
             "Tech runs through my veins like code through processors. I live for the rush of understanding how things tick, then building digital experiences that make others fall in love with technology too."
           </motion.p>
@@ -388,7 +388,7 @@ const Hero: React.FC = () => {
           
           <div className="relative">
             <PlayArrow className="absolute top-[8%] md:top-[6%] lg:top-[6%] left-[62%] md:left-[60%] lg:left-[58%]" />
-            <SplineRobot />
+            <SplineRobot mouseVelocity={mouseVelocity} />
           </div>
         </motion.div>
       </motion.div>
